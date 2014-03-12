@@ -1,0 +1,2161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vm:xmlvm xmlns:vm="http://xmlvm.org" xmlns:dex="http://xmlvm.org/dex">
+  <vm:class name="CloudObject" package="com.codename1.cloud" extends="java.lang.Object" isPublic="true" interfaces="com.codename1.io.Externalizable">
+    <vm:field name="STATUS_NEW" type="int" value="0" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_COMMITTED" type="int" value="1" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_MODIFIED" type="int" value="2" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_COMMIT_IN_PROGRESS" type="int" value="3" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_DELETE_IN_PROGRESS" type="int" value="4" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_DELETED" type="int" value="5" isStatic="true" isPublic="true" />
+    <vm:field name="STATUS_REFRESH_IN_PROGRESS" type="int" value="6" isStatic="true" isPublic="true" />
+    <vm:field name="ACCESS_PUBLIC" type="int" value="1" isStatic="true" isPublic="true" />
+    <vm:field name="ACCESS_PUBLIC_READ_ONLY" type="int" value="2" isStatic="true" isPublic="true" />
+    <vm:field name="ACCESS_APPLICATION" type="int" value="3" isStatic="true" isPublic="true" />
+    <vm:field name="ACCESS_APPLICATION_READ_ONLY" type="int" value="4" isStatic="true" isPublic="true" />
+    <vm:field name="ACCESS_PRIVATE" type="int" value="5" isStatic="true" isPublic="true" />
+    <vm:field name="BINDING_DEFERRED" type="int" value="1" isStatic="true" isPublic="true" />
+    <vm:field name="BINDING_IMMEDIATE" type="int" value="2" isStatic="true" isPublic="true" />
+    <vm:field name="BINDING_AUTO_SAVE" type="int" value="3" isStatic="true" isPublic="true" />
+    <vm:field name="custom" type="java.util.Hashtable" isStatic="true" isPrivate="true" />
+    <vm:field name="values" type="java.util.Hashtable" isPrivate="true" />
+    <vm:field name="deferedValues" type="java.util.Hashtable" isPrivate="true" />
+    <vm:field name="cloudId" type="java.lang.String" isPrivate="true" />
+    <vm:field name="lastModified" type="long" isPrivate="true" />
+    <vm:field name="status" type="int" isPrivate="true" />
+    <vm:field name="owner" type="boolean" isPrivate="true" />
+    <vm:field name="accessPermissions" type="int" isPrivate="true" />
+    <vm:method name="&lt;init&gt;" isPublic="true">
+      <vm:signature>
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-direct class-type="java.lang.Object" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:new-instance kind="type" value="java.util.Hashtable" vx="0" vx-type="0005Ljava.util.Hashtable" />
+        <dex:invoke-direct class-type="java.util.Hashtable" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:iput-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="5" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="&lt;init&gt;" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:invoke-direct class-type="java.lang.Object" method="&lt;init&gt;" register="2">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:new-instance kind="type" value="java.util.Hashtable" vx="0" vx-type="0005Ljava.util.Hashtable" />
+        <dex:invoke-direct class-type="java.util.Hashtable" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:iput-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="5" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 84, 121, 112, 101" value="CN1Type" vx="1" vx-type="java.lang.String" id="526" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="&lt;init&gt;" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="int" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="int" />
+        <dex:invoke-direct class-type="java.lang.Object" method="&lt;init&gt;" register="2">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:new-instance kind="type" value="java.util.Hashtable" vx="0" vx-type="0005Ljava.util.Hashtable" />
+        <dex:invoke-direct class-type="java.util.Hashtable" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:iput-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="5" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="4" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 84, 121, 112, 101" value="CN1Type" vx="1" vx-type="java.lang.String" id="526" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="&lt;init&gt;">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-2" register="2" param-index="0" type="int" />
+        <dex:invoke-direct class-type="java.lang.Object" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:new-instance kind="type" value="java.util.Hashtable" vx="0" vx-type="0005Ljava.util.Hashtable" />
+        <dex:invoke-direct class-type="java.util.Hashtable" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:iput-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="5" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="2" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getStatus" isPublic="true">
+      <vm:signature>
+        <vm:return type="int" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setStatus">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="1" vx-type="int" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setValues">
+      <vm:signature>
+        <vm:parameter type="java.util.Hashtable" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.util.Hashtable" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="1" vx-type="java.util.Hashtable" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getValues">
+      <vm:signature>
+        <vm:return type="java.util.Hashtable" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setType" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-2" register="2" param-index="0" type="java.lang.String" />
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 84, 121, 112, 101" value="CN1Type" vx="0" vx-type="java.lang.String" id="526" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="setString" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getType" isPublic="true">
+      <vm:signature>
+        <vm:return type="java.lang.String" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 84, 121, 112, 101" value="CN1Type" vx="0" vx-type="java.lang.String" id="526" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getString" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setIndexString" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="6">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="int" />
+        <dex:var name="var-register-5" register="5" param-index="1" type="java.lang.String" />
+        <dex:const-16 type="int" value="10" vx="0" vx-type="int" />
+        <dex:if-gt vx="4" vx-type="int" vy="0" vy-type="int" target="7" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:if-ge vx="4" vx-type="int" vy="0" vy-type="int" target="32" />
+        <dex:label id="7" />
+        <dex:new-instance kind="type" value="java.lang.IllegalArgumentException" vx="0" vx-type="000bLjava.lang.IllegalArgumentException" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="1" vx-type="000fLjava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="15" encoded-value="73, 110, 118, 97, 108, 105, 100, 32, 105, 110, 100, 101, 120, 58, 32" value="Invalid index: " vx="2" vx-type="java.lang.String" id="2733" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-direct class-type="java.lang.IllegalArgumentException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.IllegalArgumentException" class-type="java.lang.IllegalArgumentException" />
+        <dex:label id="32" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0027Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="setString" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getIndexString" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:return type="java.lang.String" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="int" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0001Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="3" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getString" register="2">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setIndexLong" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:parameter type="long" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="7">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="int" />
+        <dex:var name="var-register-5" register="5" param-index="1" type="long" />
+        <dex:const-16 type="int" value="10" vx="0" vx-type="int" />
+        <dex:if-gt vx="4" vx-type="int" vy="0" vy-type="int" target="7" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:if-ge vx="4" vx-type="int" vy="0" vy-type="int" target="32" />
+        <dex:label id="7" />
+        <dex:new-instance kind="type" value="java.lang.IllegalArgumentException" vx="0" vx-type="000bLjava.lang.IllegalArgumentException" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="1" vx-type="000fLjava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="15" encoded-value="73, 110, 118, 97, 108, 105, 100, 32, 105, 110, 100, 101, 120, 58, 32" value="Invalid index: " vx="2" vx-type="java.lang.String" id="2733" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-direct class-type="java.lang.IllegalArgumentException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.IllegalArgumentException" class-type="java.lang.IllegalArgumentException" />
+        <dex:label id="32" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0027Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="setLong" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:parameter type="long" register="5" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getIndexLong" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:return type="java.lang.Long" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="int" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0001Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="3" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getLong" register="2">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:return type="java.lang.Long" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Long" />
+        </dex:invoke-virtual>
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setIndexDouble" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:parameter type="double" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="7">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="int" />
+        <dex:var name="var-register-5" register="5" param-index="1" type="double" />
+        <dex:const-16 type="int" value="10" vx="0" vx-type="int" />
+        <dex:if-gt vx="4" vx-type="int" vy="0" vy-type="int" target="7" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:if-ge vx="4" vx-type="int" vy="0" vy-type="int" target="32" />
+        <dex:label id="7" />
+        <dex:new-instance kind="type" value="java.lang.IllegalArgumentException" vx="0" vx-type="000bLjava.lang.IllegalArgumentException" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="1" vx-type="000fLjava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="15" encoded-value="73, 110, 118, 97, 108, 105, 100, 32, 105, 110, 100, 101, 120, 58, 32" value="Invalid index: " vx="2" vx-type="java.lang.String" id="2733" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-direct class-type="java.lang.IllegalArgumentException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.IllegalArgumentException" class-type="java.lang.IllegalArgumentException" />
+        <dex:label id="32" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0027Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="setDouble" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:parameter type="double" register="5" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getIndexDouble" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:return type="java.lang.Double" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="int" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0001Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="8" encoded-value="67, 78, 49, 73, 110, 100, 101, 120" value="CN1Index" vx="1" vx-type="java.lang.String" id="527" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="3" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getDouble" register="2">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:return type="java.lang.Double" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Double" />
+        </dex:invoke-virtual>
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="isOwner" isPublic="true">
+      <vm:signature>
+        <vm:return type="boolean" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getCloudId" isPublic="true">
+      <vm:signature>
+        <vm:return type="java.lang.String" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setCloudId">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.lang.String" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="1" vx-type="java.lang.String" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getLastModified" isPublic="true">
+      <vm:signature>
+        <vm:return type="long" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-wide kind="field" class-type="com.codename1.cloud.CloudObject" member-type="long" member-name="lastModified" vx="0" vx-type="long" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-wide vx="0" vx-type="long" class-type="long" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setLastModified">
+      <vm:signature>
+        <vm:parameter type="long" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="long" />
+        <dex:iput-wide kind="field" class-type="com.codename1.cloud.CloudObject" member-type="long" member-name="lastModified" vx="1" vx-type="long" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getObject" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Object" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="get" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:if-nez vx="1" vx-type="java.lang.Object" target="23" />
+        <dex:sget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="custom" vx="0" vx-type="java.util.Hashtable" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="get" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:check-cast kind="type" value="com.codename1.cloud.CustomProperty" vx="0" vx-type="com.codename1.cloud.CustomProperty" vy="0" vy-type="java.lang.Object" />
+        <dex:if-eqz vx="0" vx-type="com.codename1.cloud.CustomProperty" target="23" />
+        <dex:invoke-interface class-type="com.codename1.cloud.CustomProperty" method="propertyValue" register="0">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.cloud.CloudObject" register="2" />
+            <dex:parameter type="java.lang.String" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-interface>
+        <dex:label id="22" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+        <dex:label id="23" />
+        <dex:move-object vx="0" vx-type="java.lang.Object" vy="1" vy-type="java.lang.Object" />
+        <dex:goto target="22" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setCustomProperty" isStatic="true" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="com.codename1.cloud.CustomProperty" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-2" register="2" param-index="1" type="com.codename1.cloud.CustomProperty" />
+        <dex:if-nez vx="2" vx-type="com.codename1.cloud.CustomProperty" target="8" />
+        <dex:sget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="custom" vx="0" vx-type="java.util.Hashtable" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="remove" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:label id="7" />
+        <dex:return-void />
+        <dex:label id="8" />
+        <dex:sget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="custom" vx="0" vx-type="java.util.Hashtable" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:parameter type="java.lang.Object" register="2" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:goto target="7" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setString" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.String" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:if-nez vx="4" vx-type="java.lang.String" target="20" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="remove" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:label id="19" />
+        <dex:return-void />
+        <dex:label id="20" />
+        <dex:invoke-virtual class-type="java.lang.String" method="length" register="4">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:const-16 type="int" value="512" vx="1" vx-type="int" />
+        <dex:if-le vx="0" vx-type="int" vy="1" vy-type="int" target="36" />
+        <dex:new-instance kind="type" value="java.lang.IllegalArgumentException" vx="0" vx-type="0029Ljava.lang.IllegalArgumentException" />
+        <dex:const-string kind="string" length="16" encoded-value="83, 116, 114, 105, 110, 103, 32, 116, 111, 111, 32, 108, 111, 110, 103, 33" value="String too long!" vx="1" vx-type="java.lang.String" id="2735" />
+        <dex:invoke-direct class-type="java.lang.IllegalArgumentException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.IllegalArgumentException" class-type="java.lang.IllegalArgumentException" />
+        <dex:label id="36" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:goto target="19" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getString" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.String" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:check-cast kind="type" value="java.lang.String" vx="0" vx-type="java.lang.String" vy="0" vy-type="java.lang.Object" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="remove" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="3">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-2" register="2" param-index="0" type="java.lang.String" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="remove" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="2" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setLong" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="long" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="6">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="long" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:new-instance kind="type" value="java.lang.Long" vx="1" vx-type="001bLjava.lang.Long" />
+        <dex:invoke-direct class-type="java.lang.Long" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:parameter type="long" register="4" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setLong" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.Long" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.Long" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getLong" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Long" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="3" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:instance-of kind="type" value="java.lang.Integer" vx="0" vx-type="int" vy="3" vy-type="java.lang.Object" />
+        <dex:if-eqz vx="0" vx-type="int" target="21" />
+        <dex:new-instance kind="type" value="java.lang.Long" vx="0" vx-type="000dLjava.lang.Long" />
+        <dex:check-cast kind="type" value="java.lang.Integer" vx="3" vx-type="java.lang.Integer" vy="3" vy-type="java.lang.Object" />
+        <dex:invoke-virtual class-type="java.lang.Integer" method="intValue" register="3">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:int-to-long vx="1" vx-type="long" vy="1" vy-type="int" />
+        <dex:invoke-direct class-type="java.lang.Long" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="long" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:label id="20" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+        <dex:label id="21" />
+        <dex:check-cast kind="type" value="java.lang.Long" vx="3" vx-type="java.lang.Long" vy="3" vy-type="java.lang.Object" />
+        <dex:move-object vx="0" vx-type="java.lang.Object" vy="3" vy-type="java.lang.Long" />
+        <dex:goto target="20" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setInteger" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="int" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="int" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:new-instance kind="type" value="java.lang.Integer" vx="1" vx-type="001bLjava.lang.Integer" />
+        <dex:invoke-direct class-type="java.lang.Integer" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:parameter type="int" register="4" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setInteger" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.Integer" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.Integer" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getInteger" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Integer" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="3" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:instance-of kind="type" value="java.lang.Long" vx="0" vx-type="int" vy="3" vy-type="java.lang.Object" />
+        <dex:if-eqz vx="0" vx-type="int" target="21" />
+        <dex:new-instance kind="type" value="java.lang.Integer" vx="0" vx-type="000dLjava.lang.Integer" />
+        <dex:check-cast kind="type" value="java.lang.Long" vx="3" vx-type="java.lang.Long" vy="3" vy-type="java.lang.Object" />
+        <dex:invoke-virtual class-type="java.lang.Long" method="longValue" register="3">
+          <dex:parameters>
+            <dex:return type="long" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="long" />
+        </dex:invoke-virtual>
+        <dex:long-to-int vx="1" vx-type="int" vy="1" vy-type="long" />
+        <dex:invoke-direct class-type="java.lang.Integer" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="int" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:label id="20" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+        <dex:label id="21" />
+        <dex:check-cast kind="type" value="java.lang.Integer" vx="3" vx-type="java.lang.Integer" vy="3" vy-type="java.lang.Object" />
+        <dex:move-object vx="0" vx-type="java.lang.Object" vy="3" vy-type="java.lang.Integer" />
+        <dex:goto target="20" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setDouble" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="double" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="6">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="double" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:new-instance kind="type" value="java.lang.Double" vx="1" vx-type="001bLjava.lang.Double" />
+        <dex:invoke-direct class-type="java.lang.Double" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:parameter type="double" register="4" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setDouble" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.Double" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.Double" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getDouble" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Double" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:check-cast kind="type" value="java.lang.Double" vx="0" vx-type="java.lang.Double" vy="0" vy-type="java.lang.Object" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setFloat" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="float" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="float" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:new-instance kind="type" value="java.lang.Float" vx="1" vx-type="001bLjava.lang.Float" />
+        <dex:invoke-direct class-type="java.lang.Float" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:parameter type="float" register="4" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setFloat" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.Float" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.Float" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getFloat" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Float" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="2">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="2" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:instance-of kind="type" value="java.lang.Double" vx="0" vx-type="int" vy="2" vy-type="java.lang.Object" />
+        <dex:if-eqz vx="0" vx-type="int" target="20" />
+        <dex:new-instance kind="type" value="java.lang.Float" vx="0" vx-type="000dLjava.lang.Float" />
+        <dex:check-cast kind="type" value="java.lang.Double" vx="2" vx-type="java.lang.Double" vy="2" vy-type="java.lang.Object" />
+        <dex:invoke-virtual class-type="java.lang.Double" method="floatValue" register="2">
+          <dex:parameters>
+            <dex:return type="float" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="float" />
+        </dex:invoke-virtual>
+        <dex:invoke-direct class-type="java.lang.Float" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="float" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:label id="19" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+        <dex:label id="20" />
+        <dex:check-cast kind="type" value="java.lang.Float" vx="2" vx-type="java.lang.Float" vy="2" vy-type="java.lang.Object" />
+        <dex:move-object vx="0" vx-type="java.lang.Object" vy="2" vy-type="java.lang.Float" />
+        <dex:goto target="19" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setBoolean" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="boolean" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="boolean" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:new-instance kind="type" value="java.lang.Boolean" vx="1" vx-type="001bLjava.lang.Boolean" />
+        <dex:invoke-direct class-type="java.lang.Boolean" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:parameter type="boolean" register="4" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="setBoolean" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.Boolean" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.String" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.Boolean" />
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="int" target="12" />
+        <dex:new-instance kind="type" value="java.lang.RuntimeException" vx="0" vx-type="0007Ljava.lang.RuntimeException" />
+        <dex:const-string kind="string" length="39" encoded-value="82, 101, 97, 100, 32, 111, 110, 108, 121, 32, 111, 98, 106, 101, 99, 116, 44, 32, 121, 111, 117, 32, 97, 114, 101, 32, 110, 111, 116, 32, 116, 104, 101, 32, 111, 119, 110, 101, 114" value="Read only object, you are not the owner" vx="1" vx-type="java.lang.String" id="2734" />
+        <dex:invoke-direct class-type="java.lang.RuntimeException" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:throw vx="0" vx-type="java.lang.RuntimeException" class-type="java.lang.RuntimeException" />
+        <dex:label id="12" />
+        <dex:const-4 type="int" value="2" vx="0" vx-type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:parameter type="java.lang.Object" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getBoolean" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="java.lang.Boolean" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="0" type="java.lang.String" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getObject" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:check-cast kind="type" value="java.lang.Boolean" vx="0" vx-type="java.lang.Boolean" vy="0" vy-type="java.lang.Object" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getVersion" isPublic="true">
+      <vm:signature>
+        <vm:return type="int" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 type="int" value="1" vx="0" vx-type="int" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="externalize" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.io.DataOutputStream" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.io.DataOutputStream" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-static class-type="com.codename1.io.Util" method="writeUTF">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:parameter type="java.io.DataOutputStream" register="3" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-static>
+        <dex:iget-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="boolean" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataOutputStream" method="writeBoolean" register="3">
+          <dex:parameters>
+            <dex:parameter type="boolean" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="getAccessPermissions" register="2">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.io.DataOutputStream" method="writeByte" register="3">
+          <dex:parameters>
+            <dex:parameter type="int" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:iget-wide kind="field" class-type="com.codename1.cloud.CloudObject" member-type="long" member-name="lastModified" vx="0" vx-type="long" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataOutputStream" method="writeLong" register="3">
+          <dex:parameters>
+            <dex:parameter type="long" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:iget kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataOutputStream" method="writeInt" register="3">
+          <dex:parameters>
+            <dex:parameter type="int" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-static class-type="com.codename1.io.Util" method="writeObject">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="0" />
+            <dex:parameter type="java.io.DataOutputStream" register="3" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-static>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getObjectId" isPublic="true">
+      <vm:signature>
+        <vm:return type="java.lang.String" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:const-string kind="string" length="11" encoded-value="67, 108, 111, 117, 100, 79, 98, 106, 101, 99, 116" value="CloudObject" vx="0" vx-type="java.lang.String" id="555" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="internalize" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="int" />
+        <vm:parameter type="java.io.DataInputStream" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="int" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.io.DataInputStream" />
+        <dex:invoke-static class-type="com.codename1.io.Util" method="readUTF">
+          <dex:parameters>
+            <dex:parameter type="java.io.DataInputStream" register="4" />
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-static>
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataInputStream" method="readBoolean" register="4">
+          <dex:parameters>
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="boolean" />
+        </dex:invoke-virtual>
+        <dex:iput-boolean kind="field" class-type="com.codename1.cloud.CloudObject" member-type="boolean" member-name="owner" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataInputStream" method="readByte" register="4">
+          <dex:parameters>
+            <dex:return type="byte" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="byte" />
+        </dex:invoke-virtual>
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataInputStream" method="readLong" register="4">
+          <dex:parameters>
+            <dex:return type="long" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="long" />
+        </dex:invoke-virtual>
+        <dex:iput-wide kind="field" class-type="com.codename1.cloud.CloudObject" member-type="long" member-name="lastModified" vx="0" vx-type="long" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.io.DataInputStream" method="readInt" register="4">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="0" vx-type="int" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-static class-type="com.codename1.io.Util" method="readObject">
+          <dex:parameters>
+            <dex:parameter type="java.io.DataInputStream" register="4" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-static>
+        <dex:check-cast kind="type" value="java.util.Hashtable" vx="0" vx-type="java.util.Hashtable" vy="0" vy-type="java.lang.Object" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="getAccessPermissions" isPublic="true">
+      <vm:signature>
+        <vm:return type="int" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="accessPermissions" vx="0" vx-type="int" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="equals" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="java.lang.Object" />
+        <vm:return type="boolean" />
+      </vm:signature>
+      <dex:code register-size="4">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="java.lang.Object" />
+        <dex:const-4 type="int" value="0" vx="1" vx-type="int" />
+        <dex:instance-of kind="type" value="com.codename1.cloud.CloudObject" vx="0" vx-type="int" vy="3" vy-type="java.lang.Object" />
+        <dex:if-nez vx="0" vx-type="int" target="7" />
+        <dex:move vx="0" vx-type="int" vy="1" vy-type="int" />
+        <dex:label id="6" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+        <dex:label id="7" />
+        <dex:check-cast kind="type" value="com.codename1.cloud.CloudObject" vx="3" vx-type="com.codename1.cloud.CloudObject" vy="3" vy-type="java.lang.Object" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="java.lang.String" target="26" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="java.lang.String" target="26" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="1" vx-type="java.util.Hashtable" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="equals" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="boolean" />
+        </dex:invoke-virtual>
+        <dex:goto target="6" />
+        <dex:label id="26" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-eqz vx="0" vx-type="java.lang.String" target="34" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-nez vx="0" vx-type="java.lang.String" target="36" />
+        <dex:label id="34" />
+        <dex:move vx="0" vx-type="int" vy="1" vy-type="int" />
+        <dex:goto target="6" />
+        <dex:label id="36" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="2" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="1" vx-type="java.lang.String" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.lang.String" method="equals" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="boolean" />
+        </dex:invoke-virtual>
+        <dex:goto target="6" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="hashCode" isPublic="true">
+      <vm:signature>
+        <vm:return type="int" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-eqz vx="0" vx-type="java.lang.String" target="11" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.lang.String" member-name="cloudId" vx="0" vx-type="java.lang.String" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.lang.String" method="hashCode" register="0">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:label id="10" />
+        <dex:return vx="0" vx-type="int" class-type="int" />
+        <dex:label id="11" />
+        <dex:const-4 type="int" value="0" vx="0" vx-type="int" />
+        <dex:goto target="10" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="bindTree" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.ui.Container" />
+        <vm:parameter type="int" />
+        <vm:parameter type="boolean" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="12">
+        <dex:var name="this" register="8" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-9" register="9" param-index="0" type="com.codename1.ui.Container" />
+        <dex:var name="var-register-10" register="10" param-index="1" type="int" />
+        <dex:var name="var-register-11" register="11" param-index="2" type="boolean" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Container" method="getComponentCount" register="9">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="6" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:const-4 type="int" value="0" vx="0" vx-type="int" />
+        <dex:move vx="7" vx-type="int" vy="0" vy-type="int" />
+        <dex:label id="6" />
+        <dex:if-ge vx="7" vx-type="int" vy="6" vy-type="int" target="50" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Container" method="getComponentAt" register="9">
+          <dex:parameters>
+            <dex:parameter type="int" register="7" />
+            <dex:return type="com.codename1.ui.Component" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="com.codename1.ui.Component" />
+        </dex:invoke-virtual>
+        <dex:instance-of kind="type" value="com.codename1.ui.Container" vx="0" vx-type="int" vy="1" vy-type="com.codename1.ui.Component" />
+        <dex:if-eqz vx="0" vx-type="int" target="25" />
+        <dex:check-cast kind="type" value="com.codename1.ui.Container" vx="1" vx-type="com.codename1.ui.Container" vy="1" vy-type="com.codename1.ui.Component" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="bindTree" register="8">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.ui.Container" register="1" />
+            <dex:parameter type="int" register="10" />
+            <dex:parameter type="boolean" register="11" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:label id="21" />
+        <dex:add-int-lit8 type="int" value="1" vx="0" vx-type="int" vy="7" vy-type="int" />
+        <dex:move vx="7" vx-type="int" vy="0" vy-type="int" />
+        <dex:goto target="6" />
+        <dex:label id="25" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getCloudBoundProperty" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="2" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:if-eqz vx="2" vx-type="java.lang.String" target="21" />
+        <dex:invoke-virtual class-type="java.lang.String" method="length" register="2">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:if-lez vx="0" vx-type="int" target="21" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getCloudDestinationProperty" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="3" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:if-eqz vx="3" vx-type="java.lang.String" target="21" />
+        <dex:move-object vx="0" vx-type="com.codename1.cloud.CloudObject" vy="8" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:move vx="4" vx-type="int" vy="10" vy-type="int" />
+        <dex:move vx="5" vx-type="int" vy="11" vy-type="int" />
+        <dex:invoke-virtual-range class-type="com.codename1.cloud.CloudObject" method="bindProperty" register="0">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.ui.Component" register="1" />
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:parameter type="java.lang.String" register="3" />
+            <dex:parameter type="int" register="4" />
+            <dex:parameter type="boolean" register="5" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual-range>
+        <dex:goto target="21" />
+        <dex:label id="50" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="unbindTree" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.ui.Container" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="7">
+        <dex:var name="this" register="5" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-6" register="6" param-index="0" type="com.codename1.ui.Container" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Container" method="getComponentCount" register="6">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:const-4 type="int" value="0" vx="0" vx-type="int" />
+        <dex:move vx="2" vx-type="int" vy="0" vy-type="int" />
+        <dex:label id="6" />
+        <dex:if-ge vx="2" vx-type="int" vy="1" vy-type="int" target="47" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Container" method="getComponentAt" register="6">
+          <dex:parameters>
+            <dex:parameter type="int" register="2" />
+            <dex:return type="com.codename1.ui.Component" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="com.codename1.ui.Component" />
+        </dex:invoke-virtual>
+        <dex:instance-of kind="type" value="com.codename1.ui.Container" vx="3" vx-type="int" vy="0" vy-type="com.codename1.ui.Component" />
+        <dex:if-eqz vx="3" vx-type="int" target="25" />
+        <dex:check-cast kind="type" value="com.codename1.ui.Container" vx="0" vx-type="com.codename1.ui.Container" vy="0" vy-type="com.codename1.ui.Component" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="unbindTree" register="5">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.ui.Container" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:label id="21" />
+        <dex:add-int-lit8 type="int" value="1" vx="0" vx-type="int" vy="2" vy-type="int" />
+        <dex:move vx="2" vx-type="int" vy="0" vy-type="int" />
+        <dex:goto target="6" />
+        <dex:label id="25" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getCloudBoundProperty" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="3" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:if-eqz vx="3" vx-type="java.lang.String" target="21" />
+        <dex:invoke-virtual class-type="java.lang.String" method="length" register="3">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="4" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:if-lez vx="4" vx-type="int" target="21" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getCloudDestinationProperty" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="4" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:if-eqz vx="4" vx-type="java.lang.String" target="21" />
+        <dex:invoke-virtual class-type="com.codename1.cloud.CloudObject" method="unbindProperty" register="5">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.ui.Component" register="0" />
+            <dex:parameter type="java.lang.String" register="3" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:goto target="21" />
+        <dex:label id="47" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="bindProperty" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.ui.Component" />
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="java.lang.String" />
+        <vm:parameter type="int" />
+        <vm:parameter type="boolean" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="9">
+        <dex:var name="this" register="3" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-4" register="4" param-index="0" type="com.codename1.ui.Component" />
+        <dex:var name="var-register-5" register="5" param-index="1" type="java.lang.String" />
+        <dex:var name="var-register-6" register="6" param-index="2" type="java.lang.String" />
+        <dex:var name="var-register-7" register="7" param-index="3" type="int" />
+        <dex:var name="var-register-8" register="8" param-index="4" type="boolean" />
+        <dex:const-4 type="int" value="2" vx="2" vx-type="int" />
+        <dex:if-eqz vx="8" vx-type="int" target="64" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="get" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="6" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getBoundPropertyValue" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:if-nez vx="0" vx-type="java.lang.Object" target="52" />
+        <dex:if-eqz vx="1" vx-type="java.lang.Object" target="21" />
+        <dex:const-4 kind="known-null" value="null" vx="0" vx-type="null" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="setBoundPropertyValue" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:parameter type="java.lang.Object" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:label id="21" />
+        <dex:new-instance kind="type" value="com.codename1.cloud.CloudObject$1" vx="0" vx-type="008dLcom.codename1.cloud.CloudObject$1" />
+        <dex:invoke-direct class-type="com.codename1.cloud.CloudObject$1" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:parameter type="com.codename1.cloud.CloudObject" register="3" />
+            <dex:parameter type="int" register="7" />
+            <dex:parameter type="java.lang.String" register="6" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="bindProperty" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:parameter type="com.codename1.cloud.BindTarget" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="1" vx-type="00a2Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="1">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 66, 105, 110, 100" value="CN1Bind" vx="2" vx-type="java.lang.String" id="2736" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="2" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="1">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="1">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="putClientProperty" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:parameter type="java.lang.Object" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+        <dex:label id="52" />
+        <dex:if-eqz vx="1" vx-type="java.lang.Object" target="60" />
+        <dex:invoke-virtual class-type="java.lang.Object" method="equals" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="boolean" />
+        </dex:invoke-virtual>
+        <dex:if-nez vx="1" vx-type="int" target="21" />
+        <dex:label id="60" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="setBoundPropertyValue" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:parameter type="java.lang.Object" register="0" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:goto target="21" />
+        <dex:label id="64" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="get" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="6" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getBoundPropertyValue" register="4">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="5" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:if-nez vx="1" vx-type="java.lang.Object" target="86" />
+        <dex:if-eqz vx="0" vx-type="java.lang.Object" target="21" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="remove" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="6" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="2" vx-type="int" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:goto target="21" />
+        <dex:label id="86" />
+        <dex:if-eqz vx="0" vx-type="java.lang.Object" target="94" />
+        <dex:invoke-virtual class-type="java.lang.Object" method="equals" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="boolean" />
+        </dex:invoke-virtual>
+        <dex:if-nez vx="0" vx-type="int" target="21" />
+        <dex:label id="94" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="6" />
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="2" vx-type="int" vy="3" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:goto target="21" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="unbindProperty" isPublic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.ui.Component" />
+        <vm:parameter type="java.lang.String" />
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="2" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-3" register="3" param-index="0" type="com.codename1.ui.Component" />
+        <dex:var name="var-register-4" register="4" param-index="1" type="java.lang.String" />
+        <dex:new-instance kind="type" value="java.lang.StringBuilder" vx="0" vx-type="0001Ljava.lang.StringBuilder" />
+        <dex:invoke-direct class-type="java.lang.StringBuilder" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:const-string kind="string" length="7" encoded-value="67, 78, 49, 66, 105, 110, 100" value="CN1Bind" vx="1" vx-type="java.lang.String" id="2736" />
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="1" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="append" register="0">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="4" />
+            <dex:return type="java.lang.StringBuilder" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.StringBuilder" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.lang.StringBuilder" method="toString" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.String" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.lang.String" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="getClientProperty" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="0" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="2" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:check-cast kind="type" value="com.codename1.cloud.BindTarget" vx="2" vx-type="com.codename1.cloud.BindTarget" vy="2" vy-type="java.lang.Object" />
+        <dex:invoke-virtual class-type="com.codename1.ui.Component" method="unbindProperty" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.String" register="4" />
+            <dex:parameter type="com.codename1.cloud.BindTarget" register="2" />
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="commitBinding" isPublic="true">
+      <vm:signature>
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="5">
+        <dex:var name="this" register="4" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="java.util.Hashtable" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:if-eqz vx="0" vx-type="java.util.Hashtable" target="43" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="java.util.Hashtable" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="size" register="0">
+          <dex:parameters>
+            <dex:return type="int" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="int" />
+        </dex:invoke-virtual>
+        <dex:if-lez vx="0" vx-type="int" target="43" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="java.util.Hashtable" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="keys" register="0">
+          <dex:parameters>
+            <dex:return type="java.util.Enumeration" />
+          </dex:parameters>
+          <dex:move-result vx="0" vx-type="java.util.Enumeration" />
+        </dex:invoke-virtual>
+        <dex:label id="18" />
+        <dex:invoke-interface class-type="java.util.Enumeration" method="hasMoreElements" register="0">
+          <dex:parameters>
+            <dex:return type="boolean" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="boolean" />
+        </dex:invoke-interface>
+        <dex:if-eqz vx="1" vx-type="int" target="40" />
+        <dex:invoke-interface class-type="java.util.Enumeration" method="nextElement" register="0">
+          <dex:parameters>
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="1" vx-type="java.lang.Object" />
+        </dex:invoke-interface>
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="2" vx-type="java.util.Hashtable" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="3" vx-type="java.util.Hashtable" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="get" register="3">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+          <dex:move-result vx="3" vx-type="java.lang.Object" />
+        </dex:invoke-virtual>
+        <dex:invoke-virtual class-type="java.util.Hashtable" method="put" register="2">
+          <dex:parameters>
+            <dex:parameter type="java.lang.Object" register="1" />
+            <dex:parameter type="java.lang.Object" register="3" />
+            <dex:return type="java.lang.Object" />
+          </dex:parameters>
+        </dex:invoke-virtual>
+        <dex:goto target="18" />
+        <dex:label id="40" />
+        <dex:const-4 kind="known-null" value="null" vx="0" vx-type="null" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="null" vy="4" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:label id="43" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="cancelBinding" isPublic="true">
+      <vm:signature>
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="this" register="1" type="com.codename1.cloud.CloudObject" />
+        <dex:const-4 kind="known-null" value="null" vx="0" vx-type="null" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="null" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+    <vm:method name="access$000" isStatic="true" isSynthetic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.cloud.CloudObject" />
+        <vm:return type="java.util.Hashtable" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="var-register-1" register="1" param-index="0" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="access$002" isStatic="true" isSynthetic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.cloud.CloudObject" />
+        <vm:parameter type="java.util.Hashtable" />
+        <vm:return type="java.util.Hashtable" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="var-register-0" register="0" param-index="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="1" type="java.util.Hashtable" />
+        <dex:iput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="deferedValues" vx="1" vx-type="java.util.Hashtable" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-object vx="1" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="access$100" isStatic="true" isSynthetic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.cloud.CloudObject" />
+        <vm:return type="java.util.Hashtable" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="var-register-1" register="1" param-index="0" type="com.codename1.cloud.CloudObject" />
+        <dex:iget-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="values" vx="0" vx-type="java.util.Hashtable" vy="1" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return-object vx="0" vx-type="java.lang.Object" class-type="java.lang.Object" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="access$202" isStatic="true" isSynthetic="true">
+      <vm:signature>
+        <vm:parameter type="com.codename1.cloud.CloudObject" />
+        <vm:parameter type="int" />
+        <vm:return type="int" />
+      </vm:signature>
+      <dex:code register-size="2">
+        <dex:var name="var-register-0" register="0" param-index="0" type="com.codename1.cloud.CloudObject" />
+        <dex:var name="var-register-1" register="1" param-index="1" type="int" />
+        <dex:iput kind="field" class-type="com.codename1.cloud.CloudObject" member-type="int" member-name="status" vx="1" vx-type="int" vy="0" vy-type="com.codename1.cloud.CloudObject" />
+        <dex:return vx="1" vx-type="int" class-type="int" />
+      </dex:code>
+    </vm:method>
+    <vm:method name="&lt;clinit&gt;" isStatic="true">
+      <vm:signature>
+        <vm:return type="void" />
+      </vm:signature>
+      <dex:code register-size="1">
+        <dex:new-instance kind="type" value="java.util.Hashtable" vx="0" vx-type="0000Ljava.util.Hashtable" />
+        <dex:invoke-direct class-type="java.util.Hashtable" method="&lt;init&gt;" register="0">
+          <dex:parameters>
+            <dex:return type="void" />
+          </dex:parameters>
+        </dex:invoke-direct>
+        <dex:sput-object kind="field" class-type="com.codename1.cloud.CloudObject" member-type="java.util.Hashtable" member-name="custom" vx="0" vx-type="java.util.Hashtable" />
+        <dex:return-void />
+      </dex:code>
+    </vm:method>
+  </vm:class>
+  <vm:references>
+    <vm:reference name="com.codename1.cloud.BindTarget" kind="usage" />
+    <vm:reference name="com.codename1.cloud.CloudObject" kind="self" />
+    <vm:reference name="com.codename1.cloud.CloudObject$1" kind="usage" />
+    <vm:reference name="com.codename1.cloud.CustomProperty" kind="usage" />
+    <vm:reference name="com.codename1.io.Externalizable" kind="interface" />
+    <vm:reference name="com.codename1.io.Util" kind="usage" />
+    <vm:reference name="com.codename1.ui.Component" kind="usage" />
+    <vm:reference name="com.codename1.ui.Container" kind="usage" />
+    <vm:reference name="java.io.DataInputStream" kind="usage" />
+    <vm:reference name="java.io.DataOutputStream" kind="usage" />
+    <vm:reference name="java.lang.Boolean" kind="usage" />
+    <vm:reference name="java.lang.Double" kind="usage" />
+    <vm:reference name="java.lang.Float" kind="usage" />
+    <vm:reference name="java.lang.IllegalArgumentException" kind="usage" />
+    <vm:reference name="java.lang.Integer" kind="usage" />
+    <vm:reference name="java.lang.Long" kind="usage" />
+    <vm:reference name="java.lang.Object" kind="super" />
+    <vm:reference name="java.lang.RuntimeException" kind="usage" />
+    <vm:reference name="java.lang.String" kind="usage" />
+    <vm:reference name="java.lang.StringBuilder" kind="usage" />
+    <vm:reference name="java.util.Enumeration" kind="usage" />
+    <vm:reference name="java.util.Hashtable" kind="usage" />
+  </vm:references>
+</vm:xmlvm>
+
