@@ -12,9 +12,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Expand;
@@ -312,6 +323,101 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     
     
     
+    protected Set<String> getCurrentXcodeFiles(String pbxprojContent){
+        Set<String> out = new HashSet<String>();
+        Scanner scanner = new Scanner(pbxprojContent);
+        int state = 0;
+        Pattern regex = Pattern.compile("\\d+ /\\* ([^ ]+) \\*/");
+        while ( scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            if ( state == 0 && line.indexOf("/* Application */ = {") >= 0){
+                state = 1;
+            } else if ( state == 1 ){
+                Matcher m = regex.matcher(line);
+                if ( m.find()){
+                    String path = m.group(1);
+                    if ( path.indexOf("/") < 0 ){
+                        out.add(path);
+                    }
+                } else if ( ");".equals(line.trim()) ){
+                    return out;
+                }
+            }
+            
+        }
+        throw new RuntimeException("Could not find the end of the file reference section");
+    }
+    
+    protected Set<String> getCurrentAppSrcFiles(){
+        File appDir = new File(getOut(), "build/xcode/src/app");
+        Set<String> out = new HashSet<String>();
+        out.addAll(Arrays.asList(appDir.list()));
+        return out;
+        
+    }
+    
+    protected void updatePbxProj() throws IOException{
+        String contents = FileUtils.readFileToString(getPbxProjectFile());
+        contents = updatePbxProj(contents);
+        FileUtils.writeStringToFile(getPbxProjectFile(), contents);
+        
+    }
+    
+    protected String updatePbxProj(String pbxProjContent){
+        Set<String> inProject = getCurrentXcodeFiles(pbxProjContent);
+        Set<String> inFileSystem = getCurrentAppSrcFiles();
+        Set<String> missingFromProject = new HashSet<String>();
+        missingFromProject.addAll(inFileSystem);
+        missingFromProject.removeAll(inProject);
+        Set<String> missingFromFileSystem = new HashSet<String>();
+        missingFromFileSystem.addAll(inProject);
+        missingFromFileSystem.removeAll(inFileSystem);
+        
+        File appDir = new File(getOut(), "build/xcode/src/app");
+        
+        if ( !missingFromProject.isEmpty()){
+            System.out.println("Found "+missingFromProject.size()+" missing from the Xcode project.  Adding them now...");
+            System.out.println(missingFromProject);
+            List<File> filesToAdd = new ArrayList<File>();
+            for ( String s : missingFromProject ){
+                filesToAdd.add(new File(appDir, s));
+            }
+            pbxProjContent = this.injectFilesIntoXcodeProject(pbxProjContent, filesToAdd.toArray(new File[0]));
+        }
+        
+        if ( !missingFromFileSystem.isEmpty() ){
+            System.out.println("Found "+missingFromFileSystem.size()+" missing from the fileSystem.  Removing them in Xcode...");
+            System.out.println(missingFromFileSystem);
+            List<File> filesToRemove = new ArrayList<File>();
+            for ( String s : missingFromFileSystem ){
+                filesToRemove.add(new File(appDir, s));
+            }
+            pbxProjContent = removeFilesFromXcodeProject(pbxProjContent, filesToRemove.toArray(new File[0]));
+        }
+        return pbxProjContent;
+        
+    }
+    
+    
+    protected String removeFilesFromXcodeProject(String projFileContent, File[] filesToRemove){
+        StringBuilder sb = new StringBuilder();
+        Scanner scanner = new Scanner(projFileContent);
+        while ( scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            boolean found = false;
+            for ( File f : filesToRemove ){
+                if ( line.indexOf("/* "+f.getName()+" */") >= 0){
+                    found = true;
+                }
+            }
+            if ( !found ){
+                sb.append(line).append("\n");
+            }
+        }
+        
+        
+        return sb.toString();
+    }
     
     
     
@@ -446,7 +552,9 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         if ( !build.exists() ){
             build.mkdir();
         }
+        
         File ios = new File(build, "ios");
+        boolean doingClean = clean || !ios.exists();
         if ( ios.exists() && clean ){
             try {
                 FileUtils.deleteDirectory(ios);
@@ -471,6 +579,16 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         addLibs();
         
         super.execute();
+        
+        if ( !doingClean ){
+            try {
+                // Let's add all of the missing files
+                updatePbxProj();
+            } catch (IOException ex) {
+                Logger.getLogger(CodenameOneIOSBuildTask.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         
         
     }
@@ -520,6 +638,191 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
      */
     public void setCldc(File cldc) {
         this.cldc = cldc;
+    }
+    
+    
+    
+    private static class FileResource {
+        static Map<String,String> sourcefiles = new HashMap<String, String>();
+        static Map<String,String> hiddensourcefiles = new HashMap<String, String>();
+        static {
+            
+           //sourcefiles.put("a", "library");
+           sourcefiles.put("c", "sourcecode.c.c");
+           sourcefiles.put("m", "sourcecode.c.objc");
+           sourcefiles.put("mm", "sourcecode.cpp.objcpp");
+           sourcefiles.put("c++", "sourcecode.cpp.cpp");
+           sourcefiles.put("cpp", "sourcecode.cpp.cpp");
+           sourcefiles.put("xib", "sourcecode.xib.xib");
+
+           
+           hiddensourcefiles.put("h", "sourcecode.c.h");
+        }
+        
+            private String  type        = null;
+            private boolean isSource    = false;
+            private boolean isValid     = false;
+            private boolean isBuildable = false;
+
+
+            private FileResource(String fname) {
+                if (fname == null)
+                    return;
+                int point = fname.lastIndexOf(".");
+                if (point < 0 || point == fname.length())
+                    return;
+
+                String ext = fname.substring(point + 1);
+
+                type = sourcefiles.get(ext);
+                if (type != null) {
+                    isValid = true;
+                    isBuildable = true;
+                    isSource = true;
+                    return;
+                }
+
+                type = hiddensourcefiles.get(ext);
+                if (type != null) {
+                    isValid = true;
+                    isSource = true;
+                    return;
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "[type=" + type + (isSource ? ", Source" : "") + (isValid ? ", Valid" : "")
+                        + (isBuildable ? ", Buildable" : "") + "]";
+            }
+        }
+    
+    private File getPbxProjectFile(){
+        return new File(this.getOut(), "dist/"+this.getBundleDisplayName()+".xcodeproj/project.pbxproj" );
+        
+    }
+    
+    private void injectFilesIntoXcodeProject(File[] files) throws IOException {
+        injectFilesIntoXcodeProject(getPbxProjectFile(), files);
+    }
+    
+    private void injectFilesIntoXcodeProject(File projectFile, File[] files) throws IOException{
+        String contents = FileUtils.readFileToString(projectFile);
+        contents = injectFilesIntoXcodeProject(contents, files);
+        FileUtils.writeStringToFile(projectFile, contents);
+    }
+    
+    /**
+     * Based on https://github.com/shannah/cn1/blob/master/Ports/iOSPort/xmlvm/src/xmlvm/org/xmlvm/proc/out/build/XCodeFile.java
+     * @param template
+     * @param filter 
+     */
+    private String injectFilesIntoXcodeProject(String template, File[] files) {
+
+        int nextid = 0;
+        Pattern idPattern = Pattern.compile(" (\\d+) ");
+        Matcher m = idPattern.matcher(template);
+        while ( m.find() ){
+            int curr = Integer.parseInt(m.group(1));
+            if ( curr > nextid ){
+                nextid = curr;
+            }
+        }
+        nextid++;
+
+        StringBuilder filerefs = new StringBuilder();
+        StringBuilder buildrefs = new StringBuilder();
+        StringBuilder display = new StringBuilder();
+        StringBuilder source = new StringBuilder();
+        StringBuilder resource = new StringBuilder();
+
+
+        for (File f : files) {
+            String fname = f.getName();
+            if ( template.indexOf(" "+fname+" ") >= 0 ){
+                continue;
+            }
+            FileResource fres = new FileResource(fname);
+            if (f.exists()) {
+                filerefs.append("\t\t").append(nextid);
+                filerefs.append(" /* ").append(fname).append(" */");
+                filerefs.append(" = { isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = ");
+                filerefs.append(fres.type).append("; path = \"");
+                filerefs.append(fname).append("\"; sourceTree = \"<group>\"; };");
+                filerefs.append('\n');
+
+                display.append("\t\t\t\t").append(nextid);
+                display.append(" /* ").append(fname).append(" */");
+                display.append(",\n");
+
+                if (fres.isBuildable) {
+                    int fileid = nextid;
+                    nextid++;
+                    buildrefs.append("\t\t").append(nextid);
+                    buildrefs.append(" /* ").append(fname);
+                    buildrefs.append(" in ").append(fres.isSource ? "Sources" : "Resources");
+                    buildrefs.append(" */ = {isa = PBXBuildFile; fileRef = ").append(fileid);
+                    buildrefs.append(" /* ").append(fname);
+                    buildrefs.append(" */; };\n");
+
+                    if (fres.isSource) {
+                        source.append("\t\t\t\t").append(nextid);
+                        source.append(" /* ").append(fname).append(" */");
+                        source.append(",\n");
+                    }
+                }
+                nextid++;
+            }
+        }
+        String data = template;
+        data = data.replace("/* End PBXFileReference section */", filerefs.toString() + "/* End PBXFileReference section */");
+        data = data.replace("/* End PBXBuildFile section */", buildrefs.toString() + "/* End PBXBuildFile section */");
+
+        // The next two we probably shouldn't do by regex because there is no clear pattern.
+        Stack<String> buffer = new Stack<String>();
+
+        Stack<String> backtrackStack = new Stack<String>();
+
+        Scanner scanner = new Scanner(data);
+        while ( scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            if ( line.indexOf("/* End PBXSourcesBuildPhase section */") >= 0 ){
+                // Found the end, let's backtrack
+                while ( !buffer.isEmpty()){
+                    String l = buffer.pop();
+                    backtrackStack.push(l);
+                    if ( ");".equals(l.trim())){
+                        // This is the closing of the sources list
+                        // we can insert the sources here
+                        buffer.push(source.toString());
+                        while ( !backtrackStack.isEmpty()){
+                            buffer.push(backtrackStack.pop());
+                        }
+                        break;
+                    }
+                }
+            } else if ( line.indexOf("name = Application;") >= 0 ){
+                while ( !buffer.isEmpty()){
+                    String l = buffer.pop();
+                    backtrackStack.push(l);
+                    if ( ");".equals(l.trim())){
+                        buffer.push(display.toString());
+                        while ( !backtrackStack.isEmpty()){
+                            buffer.push(backtrackStack.pop());
+                        }
+                        break;
+                    }
+                }
+            }
+            buffer.push(line);
+        }
+        StringBuilder sb = new StringBuilder();
+        String[] lines = buffer.toArray(new String[0]);
+        for ( String line : lines ){
+            sb.append(line).append("\n");
+        }
+        data = sb.toString();
+        return data;
     }
     
 }

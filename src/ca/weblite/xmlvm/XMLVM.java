@@ -515,7 +515,7 @@ public class XMLVM extends Task {
 
     private RootedFile[] changedSourceFiles = null;
 
-    private RootedFile[] getChangedSourceFiles() {
+    protected RootedFile[] getChangedSourceFiles() {
         if (changedSourceFiles == null) {
             List<RootedFile> out = new ArrayList<RootedFile>();
 
@@ -796,6 +796,7 @@ public class XMLVM extends Task {
                 "--target=c",
                 "--libraries=" + javac.getClasspath().toString().replaceAll(File.pathSeparator, ","),
                 "--c-source-extension=m", //"--debug=all",
+                "--disable-vtable-optimizations",
             });
 
             System.out.println(Arrays.asList(intermediateOut.list()));
@@ -1136,13 +1137,12 @@ public class XMLVM extends Task {
         xmlvmDir.mkdirs();
         
         // Step 2:  Compile java source files with javac.
-        if (getJavac() == null) {
-            setJavac((Javac) getProject().createTask("javac"));
-        }
-        getJavac().setDestdir(getJavaBuildDir());
-        getJavac().setSrcdir(getSrc());
-        getJavac().setClasspath(getClassPath());
-        getJavac().execute();
+        Javac javac = (Javac) getProject().createTask("javac");
+        setJavac(javac);
+        javac.setDestdir(getJavaBuildDir());
+        javac.setSrcdir(getSrc());
+        javac.setClasspath(getClassPath());
+        javac.execute();
 
         
         // Step 3: Generate Dependency graph
@@ -1164,7 +1164,8 @@ public class XMLVM extends Task {
                 "--target=c",
                 "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
                 "--c-source-extension=m",// "--debug=all",
-                "--load-dependencies"
+                "--load-dependencies",
+                "--disable-vtable-optimizations"
             });
         
         
@@ -1176,14 +1177,15 @@ public class XMLVM extends Task {
      * @param src Directory containing class files.
      * @param dest Directory where xmlvm files will be written, as well as .deps files
      */
-    private void createDependencyGraph(File src, File dest){
+    public void createDependencyGraph(File src, File dest){
         try {
             this.runXmlvm(new String[]{
                 "--in=" + src.getAbsolutePath(),
                 "--out=" + dest.getAbsolutePath(),
                 "--target=vtable",
                 "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
-                "--load-dependencies"
+                "--load-dependencies",
+                "--disable-vtable-optimizations"
             });
             
             for ( File f : dest.listFiles()){
@@ -1216,6 +1218,7 @@ public class XMLVM extends Task {
                     "--in=" + src.getAbsolutePath(),
                     "--out=" + tmpDir.getAbsolutePath(),
                     "--target=vtable",
+                    "--disable-vtable-optimizations"
                     //"--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
                     //"--load-dependencies"
                 });
@@ -1647,7 +1650,7 @@ public class XMLVM extends Task {
         tmp.delete();
         tmp.mkdir();
         try {
-            this.runXmlvm(new String[]{"--in=" + src.getAbsolutePath(), "--out=" + tmp.getAbsolutePath(), "--target=xmlvm"});
+            this.runXmlvm(new String[]{"--in=" + src.getAbsolutePath(), "--out=" + tmp.getAbsolutePath(), "--target=xmlvm", "--disable-vtable-optimizations"});
         } catch (Exception ex) {
             //Logger.getLogger(XMLVM.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -1705,7 +1708,7 @@ public class XMLVM extends Task {
      *
      * @return
      */
-    protected File getXmlvmCacheDir() {
+    public File getXmlvmCacheDir() {
         if (this.xmlvmCacheDir == null) {
             this.xmlvmCacheDir = new File(getProject().getBaseDir(), ".xmlvm");
             this.xmlvmCacheDir.mkdir();
@@ -1713,7 +1716,7 @@ public class XMLVM extends Task {
         return this.xmlvmCacheDir;
     }
 
-    protected File getXmlvmCacheDir(String type) {
+    public File getXmlvmCacheDir(String type) {
         File cacheDir = this.getXmlvmCacheDir();
         File out = new File(cacheDir, type);
         if (!out.exists()) {
@@ -1773,7 +1776,8 @@ public class XMLVM extends Task {
                 "--out=" + getXmlvmCacheDir("xmlvm").getAbsolutePath(),
                 "--target=xmlvm",
                 "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
-                "--load-dependencies"
+                "--load-dependencies",
+                "--disable-vtable-optimizations"
             });
         } catch (Exception ex) {
             Logger.getLogger(XMLVM.class.getName()).log(Level.SEVERE, null, ex);
@@ -1964,6 +1968,7 @@ public class XMLVM extends Task {
                 "--target=" + getTarget(),
                 "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
                 "--c-source-extension=m", //"--debug=all",
+                "--disable-vtable-optimizations"
             });
 
             del = (Delete) getProject().createTask("delete");

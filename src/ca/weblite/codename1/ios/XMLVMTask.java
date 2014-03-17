@@ -260,7 +260,17 @@ public class XMLVMTask extends Task {
         repl.setFile(buildXcode);
         repl.setToken("-Xmx512m");
         repl.setValue("-Xmx2G");
+        
         repl.execute();
+        
+        repl = (Replace)getProject().createTask("replace");
+        //File buildXcode = new File(getNBProjectDir(), "build-Xcode.xml");
+        repl.setFile(buildXcode);
+        repl.setToken("<arg value=\"-DSupportedInterfaceOrientations=${orientations.supported}\"/>");
+        repl.setValue("<arg value=\"-DSupportedInterfaceOrientations=${orientations.supported}\"/>\n<arg value=\"--disable-vtable-optimizations\"/>");
+        
+        repl.execute();
+        
         
                 
     }
@@ -612,6 +622,18 @@ public class XMLVMTask extends Task {
                 copyClassFiles();
                 executeJavac();
                 runXMLVMProject();
+                
+                // Step 3: Generate Dependency graph
+                XMLVM xmlvm = new XMLVM();
+                xmlvm.setProject(getProject());
+                xmlvm.setXmlvmClasspath(xmlvmClasspath);
+                File xmlvmDir = xmlvm.getXmlvmCacheDir("xmlvm");
+                xmlvm.setJavac(this.getJavac());
+                xmlvm.setClassPath(this.getJavac().getClasspath());
+                xmlvm.setJavaBuildDir(new File(getProject().getBaseDir(), "build/classes"));
+                xmlvm.createDependencyGraph(xmlvm.getJavaBuildDir(), xmlvmDir);
+                
+                
             } else {
                 // The project already exists, we're just updating some stuff.
                 System.out.println("Project already exists.  Let's just update the source files.");

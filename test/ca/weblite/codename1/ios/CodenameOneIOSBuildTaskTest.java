@@ -8,7 +8,6 @@ package ca.weblite.codename1.ios;
 
 import java.io.File;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -34,5 +33,7 @@ public class CodenameOneIOSBuildTaskTest {
         //build.clean = true;
         build.execute();
     }
+    
+     
     
 }
