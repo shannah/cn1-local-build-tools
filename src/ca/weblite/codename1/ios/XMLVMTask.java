@@ -12,6 +12,7 @@ package ca.weblite.codename1.ios;
 // javac.classpath=${ant.core.lib}
 
 import ca.weblite.xmlvm.XMLVM;
+import ca.weblite.xmlvm.XmlvmHelper;
 import com.simontuffs.onejar.Boot;
 import java.io.File;
 import java.io.FileInputStream;
@@ -190,7 +191,8 @@ public class XMLVMTask extends Task {
     protected void createSkeletonProject() throws Exception{
         
         String[] args = buildXMLVMArgs();
-        Boot.main(args);
+        XmlvmHelper.runXmlvm(getProject(), xmlvmClasspath, args );
+        //Boot.main(args);
         
         File src = new File(out, "src");
         if ( src.exists() ){
