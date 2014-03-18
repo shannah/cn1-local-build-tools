@@ -22,6 +22,7 @@ public class SetupXcodeProject extends Task {
     
     private File codenameOneSrc;
     private Path xmlvmClasspath;
+    private File iOSPort;
     private boolean clean;
 
     public @Override
@@ -35,6 +36,7 @@ public class SetupXcodeProject extends Task {
             CodenameOneIOSBuildTask builder = CodenameOneIOSBuildTask.create(getProject().getBaseDir().getAbsolutePath());
             builder.setCodenameOneSrc(getCodenameOneSrc());
             builder.setXmlvmClasspath(getXmlvmClasspath());
+            builder.setiOSPort(iOSPort);
             builder.setClean(true);
             builder.execute();
             
@@ -82,6 +84,20 @@ public class SetupXcodeProject extends Task {
      */
     public void setClean(boolean clean) {
         this.clean = clean;
+    }
+
+    /**
+     * @return the iOSPort
+     */
+    public File getiOSPort() {
+        return iOSPort;
+    }
+
+    /**
+     * @param iOSPort the iOSPort to set
+     */
+    public void setiOSPort(File iOSPort) {
+        this.iOSPort = iOSPort;
     }
     
 }

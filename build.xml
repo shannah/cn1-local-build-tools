@@ -75,6 +75,11 @@
             <fileset dir="/Volumes/Windows VMS/src/codenameone-read-only/Ports/iOSPort" includes="src/**"/>
             <!--<fileset dir="/Volumes/Windows VMS/src/codenameone-read-only/Factory" includes="src/**"/>-->
             <fileset dir="/Volumes/Windows VMS/src/codenameone-read-only/Ports/iOSPort" includes="nativeSources/**"/>
+            <fileset dir="src/ca/weblite/codename1/ios/resources" includes="iosport.properties"/>
+        </zip>
+        <zip destfile="src/ca/weblite/codename1/ios/resources/CodenameOne.zip" update="yes" >
+            <fileset dir="/Volumes/Windows VMS/src/codenameone-read-only/CodenameOne/src" includes="**"/>
+            <fileset dir="src/ca/weblite/codename1/ios/resources" includes="iosport.properties"/>
         </zip>
         
     </target>

@@ -9,6 +9,7 @@ package ca.weblite.codename1.ios;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -39,13 +40,36 @@ import org.apache.tools.ant.types.Path;
  */
 public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     
-    File iOSPort;
+    /**
+     * The path to the iOSPort directory where the iOSPort
+     * source code can be found.  If this is left null then the version of 
+     * iOSPort that is bundled with the plugin will be extracted to the 
+     * iOSPort directory inside the project's base directory.
+     */
+    private File iOSPort;
+    
+    /**
+     * The path to the codenameone "src" directory if you are building from source.
+     * If this is omitted, the CodenameOne.jar in the current project is used
+     * instead.
+     */
     private File codenameOneSrc;
+    
+    /**
+     * The path to the CLDC11 jar file.  This isn't used right now.
+     */
     private File cldc;
+    
+    /**
+     * Debug flag.  If this is true then the FAT version of libzbar will be 
+     * copied into the xcode project so that it can be run in the simulator.
+     */
     private boolean debug = true;
     
     
-    
+    /**
+     * Creates a build task at with the given base directory.
+     */
     public static CodenameOneIOSBuildTask create(String basePath){
         org.apache.tools.ant.Project proj = new org.apache.tools.ant.Project();
         
@@ -58,15 +82,46 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
-    
+    /**
+     * Adds the iOSPort to the class path.
+     */
     private void addIOSPortToClasspath() throws IOException{
-        if ( iOSPort == null ){
-            iOSPort = new File(getProject().getBaseDir(), "iOSPort");
+        if ( getiOSPort() == null || !getiOSPort().exists() ){
+            if ( getiOSPort() == null ){
+                setiOSPort(new File(getProject().getBaseDir(), "iOSPort"));
+            }
+            
             if ( !iOSPort.exists() ){
                 extractIOSPort();
             }
         }
-        File javaSources = new File(iOSPort, "src");
+        
+        // Properties file.  If present, it means that this particular
+        // ios port is managed.   We may need to update it.
+        File iosPortProperties = new File(getiOSPort(), "iosport.properties");
+        if ( iosPortProperties.exists() ){
+            System.out.println("Using a managed version of iOSPort.");
+            Properties p = new Properties();
+            p.load(new FileInputStream(iosPortProperties));
+            String version = p.getProperty("version");
+            if ( version != null ){
+                System.out.println("iOSPort version "+version);
+                int iVersion = Integer.parseInt(version);
+                Properties currP = new Properties();
+                currP.load(this.getClass().getResourceAsStream("resources/iosport.properties"));
+                int currVersion = Integer.parseInt(currP.getProperty("version"));
+                if ( currVersion > iVersion ){
+                    System.out.println("iOSPort version is out of date.  Current version is "+currVersion);
+                    System.out.println("Deleting "+iOSPort);
+                    FileUtils.deleteDirectory(iOSPort);
+                    extractIOSPort();
+                }
+            }
+        } else {
+            System.out.println("Using unmanaged version of iOSPort at "+iOSPort);
+        }
+        
+        File javaSources = new File(getiOSPort(), "src");
         Path jsp = new Path(getProject(), javaSources.getPath());
         Path srcDir = getJavac().getSrcdir();
         if ( srcDir == null ){
@@ -75,7 +130,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         }
         getJavac().getSrcdir().add(jsp);
         
-        File nativeSources = new File(iOSPort, "nativeSources");
+        File nativeSources = new File(getiOSPort(), "nativeSources");
         
         Replace repl = (Replace)getProject().createTask("replace");
         repl.setToken("#define INCLUDE_ZOOZ");
@@ -94,6 +149,9 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
+    /**
+     * Originally we ran a pre javac against CLDC11 before building against
+     * harmony.. but this wasn't necessary.
     private void runPreJavac(){
         Javac javac = (Javac)getProject().createTask("javac");
         Path cp = javac.createClasspath();
@@ -147,16 +205,21 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
+    */
     
-    
-    
+    /**
+     * Returns the the iOSPort directory as a File.
+     */
     private File getIOSPortDir(){
         return new File(getProject().getBaseDir(), "iOSPort");
         
     }
     
     
-    
+    /**
+     * Extracts the iOSPort that is bundled inside the module's jar file
+     * and saves it in the iOSPort directory.
+     */
     private void extractIOSPort() throws IOException{
         File dir = getIOSPortDir();
         if ( !dir.exists() ){
@@ -171,12 +234,14 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
             unzip.setTaskType("unzip");
             
             unzip.setSrc(tmp);
-            unzip.setDest(iOSPort);
+            unzip.setDest(getiOSPort());
             unzip.execute();
         }
         
     }
-    
+    /**
+     * Adds libraries to be included in XMLVM build.
+     */
     private void addLibs(){
         String lib = getLib();
         String toAdd = "libxml2.2.dylib,Security.framework,libzbar.a";
@@ -193,7 +258,9 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         setLib(lib);
     }
     
-    
+    /**
+     * Sets the project info for the Xcode project.
+     */
     private void setupProjectInfo() throws IOException{
         File basedir = getProject().getBaseDir();
         File props = new File(basedir, "codenameone_settings.properties");
@@ -207,7 +274,76 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
+    private void extractCodenameOneSrc() throws IOException{
+        if ( codenameOneSrc == null ){
+            codenameOneSrc = new File(getProject().getBaseDir(), "CodenameOneSrc");
+        }
+        File dir = codenameOneSrc;
+        
+        if ( !dir.exists() ){
+            dir.mkdir();
+            
+            URL src = getClass().getResource("resources/CodenameOne.zip");
+            
+            File tmp = File.createTempFile("codenameone", "zip");
+            tmp.delete();
+            FileUtils.copyURLToFile(src, tmp);
+            System.out.println("Extracting CodenameOne Src to "+codenameOneSrc);
+            Expand unzip = (Expand)getProject().createTask("unzip");
+            unzip.setTaskType("unzip");
+            
+            unzip.setSrc(tmp);
+            unzip.setDest(codenameOneSrc);
+            unzip.execute();
+        }
+    }
     
+    private void addCodenameOneToClasspath(Path src, Path cp) throws  IOException{
+        if ( codenameOneSrc == null || !codenameOneSrc.exists() ){
+            if ( codenameOneSrc == null ){
+                setCodenameOneSrc(new File(getProject().getBaseDir(), "CodenameOneSrc"));
+            }
+            
+            if ( !codenameOneSrc.exists() ){
+                extractCodenameOneSrc();
+            }
+        }
+        
+        // Properties file.  If present, it means that this particular
+        // ios port is managed.   We may need to update it.
+        File cn1SrcProperties = new File(codenameOneSrc, "iosport.properties");
+        if ( cn1SrcProperties.exists() ){
+            System.out.println("Using a managed version of CodenameOne.");
+            Properties p = new Properties();
+            p.load(new FileInputStream(cn1SrcProperties));
+            String version = p.getProperty("version");
+            if ( version != null ){
+                System.out.println("CodenameOne src version "+version);
+                int iVersion = Integer.parseInt(version);
+                Properties currP = new Properties();
+                currP.load(this.getClass().getResourceAsStream("resources/iosport.properties"));
+                int currVersion = Integer.parseInt(currP.getProperty("version"));
+                if ( currVersion > iVersion ){
+                    System.out.println("CodenameOne src version is out of date.  Current version is "+currVersion);
+                    System.out.println("Deleting "+codenameOneSrc);
+                    FileUtils.deleteDirectory(codenameOneSrc);
+                    extractCodenameOneSrc();
+                }
+            }
+        } else {
+            System.out.println("Using unmanaged version of CodenameOne Src at "+codenameOneSrc);
+        }
+        if ( codenameOneSrc != null && codenameOneSrc.exists() ){
+            
+            src.add(new Path(getProject(), codenameOneSrc.getAbsolutePath()));
+        } else {
+            cp.add(new Path(getProject(), "lib/CodenameOne.jar"));
+        }
+    }
+    
+    /**
+     * Sets up a new Javac task for building all of the .java files
+     */
     public void setupJavac() throws IOException{
         Javac javac = (Javac)getProject().createTask("javac");
         setJavac(javac);
@@ -216,17 +352,14 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         Path src = javac.getSrcdir();
         if ( src == null ){
             src = new Path(getProject());
-            getJavac().setSrcdir(src);
+            
         }
         src.add(new Path(getProject(), "src"));
         getJavac().setClasspath(cp);
         addIOSPortToClasspath();
-        if ( codenameOneSrc != null && codenameOneSrc.exists() ){
-            
-            src.add(new Path(getProject(), codenameOneSrc.getAbsolutePath()));
-        } else {
-            cp.add(new Path(getProject(), "lib/CodenameOne.jar"));
-        }
+        addCodenameOneToClasspath(src, cp);
+        
+        
         cp.add(new Path(getProject(), "lib/impl/cls"));
         cp.add(new Path(getProject(), "build/classes"));
         //javac.setClasspath(cp);
@@ -240,7 +373,8 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         File build = new File(getProject().getBaseDir(), "build");
         File classes = new File(build, "classes");
         getJavac().setDestdir(classes);
-        
+        //getJavac().setSrcdir(src);
+        getJavac().setSrcdir(src);
         setJavac(javac);
         
         setupMainStub();
@@ -250,7 +384,9 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     
     
     
-    
+    /**
+     * Sets up the stub file used as the entry point for the Codename One app.
+     */
     private void setupMainStub() throws IOException{
         File build = new File(getProject().getBaseDir(), "build");
         File generated = new File(build, "generated-src");
@@ -303,6 +439,9 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
 
+    /**
+     * Fixes the properties in the Netbeans skeleton project that was set up by xmlvm.
+     */
     @Override
     protected void fixSkeletonProperties() throws IOException {
         super.fixSkeletonProperties(); //To change body of generated methods, choose Tools | Templates.
@@ -322,7 +461,10 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     }
     
     
-    
+    /**
+     * Gets a list of the XMLVM generated files that are currently registered
+     * in the Xcode project.
+     */
     protected Set<String> getCurrentXcodeFiles(String pbxprojContent){
         Set<String> out = new HashSet<String>();
         Scanner scanner = new Scanner(pbxprojContent);
@@ -348,6 +490,11 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         throw new RuntimeException("Could not find the end of the file reference section");
     }
     
+    /**
+     * Gets a list of the current app source files.
+     * 
+     * @return 
+     */
     protected Set<String> getCurrentAppSrcFiles(){
         File appDir = new File(getOut(), "build/xcode/src/app");
         Set<String> out = new HashSet<String>();
@@ -356,6 +503,12 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
+    /**
+     * Updates the Xcode project by removing non-existent source files
+     * and adding source files that are present but not yet registered in
+     * the project file.
+     * @throws IOException 
+     */
     protected void updatePbxProj() throws IOException{
         String contents = FileUtils.readFileToString(getPbxProjectFile());
         contents = updatePbxProj(contents);
@@ -363,6 +516,13 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
+    /**
+     * Generates an updated project file by adding new soruce files and removing
+     * non-existing files.  This does not write the project file.  It simply processes
+     * content and returns modified content.
+     * @param pbxProjContent  The contents of the project file.
+     * @return String with the updated project file contents.
+     */
     protected String updatePbxProj(String pbxProjContent){
         Set<String> inProject = getCurrentXcodeFiles(pbxProjContent);
         Set<String> inFileSystem = getCurrentAppSrcFiles();
@@ -398,7 +558,13 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
-    
+    /**
+     * Returns modified Xcode project file contents after removing a set of files from the "Application" 
+     * group.
+     * @param projFileContent The Xcode project file contents.
+     * @param filesToRemove A list of files to remove.
+     * @return The modified project file contents.
+     */
     protected String removeFilesFromXcodeProject(String projFileContent, File[] filesToRemove){
         StringBuilder sb = new StringBuilder();
         Scanner scanner = new Scanner(projFileContent);
@@ -420,132 +586,10 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     }
     
     
-    
-
-   // TODO customize method names to match custom task
-    // property and type (handled by inner class) names
-
-    /* For a simple option:
-     private boolean opt;
-     public void setOpt(boolean b) {
-     opt = b;
-     }
-     // <customtask opt="true"/>
-     */
-
-    /* For a simple property based on a string:
-     private String myprop;
-     public void setMyprop(String s) {
-     myprop = s;
-     }
-     // <customtask myprop="some text here"/>
-     */
-
-    /* For a simple property based on a file:
-     private File myfile;
-     public void setMyfile(File f) {
-     // Note: f will automatically be absolute (resolved from project basedir).
-     myfile = f;
-     }
-     // <customtask myfile="foo.txt"/>
-     */
-
-    /* Custom nested elements:
-     public static class Nestme {
-     String val; // accessible from execute()
-     public void setVal(String s) {
-     val = s;
-     }
-     }
-     private List<Nestme> nestmes = new LinkedList<Nestme>();
-     public Nestme createNestme() {
-     Nestme n = new Nestme();
-     nestmes.add(n);
-     return n;
-     }
-     // Or:
-     public void addNestme(Nestme n) {
-     nestmes.add(n);
-     }
-     // <customtask>
-     //     <nestme val="something"/>
-     // </customtask>
-     */
-
-    /* To add embedded filesets:
-     private List<FileSet> filesets = new LinkedList<FileSet>();
-     public void addFileset(FileSet fs) {
-     filesets.add(fs);
-     }
-     // <customtask>
-     //     <fileset dir="foo">
-     //         <include name="*.txt"/>
-     //     </fileset>
-     // </customtask>
-     // In execute() you can do:
-     for (FileSet fs : filesets) {
-     DirectoryScanner ds = fs.getDirectoryScanner(project);
-     File basedir = ds.getBasedir();
-     for (String file : ds.getIncludedFiles()) {
-     // process it...
-     }
-     }
-     */
-
-    /* For nested text:
-     private StringBuilder text;
-     public void addText(String raw) {
-     String s = getProject().replaceProperties(raw.trim());
-     if (text == null) {
-     text = new StringBuilder(s);
-     } else {
-     text.append(s);
-     }
-     }
-     // <customtask>
-     //     Some text...
-     // </customtask>
-     */
-
-    /* Some sort of path (like classpath or similar):
-     private Path path;
-     public void setPath(Path p) {
-     if (path == null) {
-     path = p;
-     } else {
-     path.append(p);
-     }
-     }
-     public Path createPath () {
-     if (path == null) {
-     path = new Path(project);
-     }
-     return path.createPath();
-     }
-     public void setPathRef(Reference r) {
-     createPath().setRefid(r);
-     }
-     // <customtask path="foo:bar"/>
-     // <customtask>
-     //     <path>
-     //         <pathelement location="foo"/>
-     //     </path>
-     // </customtask>
-     // Etc.
-     */
-
-    /* One of a fixed set of choices:
-     public static class FooBieBletch extends EnumeratedAttribute { // or use Java 5 enums
-     public String[] getValues() {
-     return new String[] {"foo", "bie", "bletch"};
-     }
-     }
-     private String mode = "foo";
-     public void setMode(FooBieBletch m) {
-     mode = m.getValue();
-     }
-     // <customtask mode="bletch"/>
-     */
+   /**
+    * Executes the task.
+    * @throws BuildException 
+    */
     public @Override
     void execute() throws BuildException {
         File build = new File(getProject().getBaseDir(), "build");
@@ -638,6 +682,20 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
      */
     public void setCldc(File cldc) {
         this.cldc = cldc;
+    }
+
+    /**
+     * @return the iOSPort
+     */
+    public File getiOSPort() {
+        return iOSPort;
+    }
+
+    /**
+     * @param iOSPort the iOSPort to set
+     */
+    public void setiOSPort(File iOSPort) {
+        this.iOSPort = iOSPort;
     }
     
     

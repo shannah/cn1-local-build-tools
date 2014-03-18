@@ -24,10 +24,11 @@ public class CodenameOneIOSBuildTaskTest {
         
         
         
-        proj.setBasedir("/Volumes/Windows VMS/NetbeansProjects/HelloWorldCN1");
+        //proj.setBasedir("/Volumes/Windows VMS/NetbeansProjects/HelloWorldCN1");
+        proj.setBasedir("/Volumes/Windows VMS/NetbeansProjects/CN1OfflineMapsDemo");
         CodenameOneIOSBuildTask build = new CodenameOneIOSBuildTask();
         build.setProject(proj);
-        build.setCodenameOneSrc(new File("/Volumes/Windows VMS/src/codenameone-read-only/CodenameOne/src"));
+        //build.setCodenameOneSrc(new File("/Volumes/Windows VMS/src/codenameone-read-only/CodenameOne/src"));
         build.setCldc(new File("/Volumes/Windows VMS/src/codenameone-read-only/CodenameOne/CLDC11.jar"));
         
         //build.clean = true;

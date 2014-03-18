@@ -17,8 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,25 +26,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.FileUtils;
@@ -55,14 +48,11 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Delete;
 import org.apache.tools.ant.taskdefs.Expand;
-import org.apache.tools.ant.taskdefs.Java;
 import org.apache.tools.ant.taskdefs.Javac;
-import org.apache.tools.ant.types.Commandline.Argument;
 
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.ZipFileSet;
-import org.apache.tools.ant.types.selectors.FileSelector;
 import org.apache.tools.ant.types.selectors.FilenameSelector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,15 +65,45 @@ import org.xml.sax.SAXException;
 public class XMLVM extends Task {
 
     private Javac javac;
+    
+    /**
+     * Classpath used by javac
+     */
     private Path classPath;
+    
+    /**
+     * The src java files to convert.
+     */
     private Path src;
+    
+    /**
+     * The destination directory where the .h and .m files will be written.
+     */
     private File dest;
+    
+    /**
+     * Directory where javac will output class files it compiles from java.
+     */
     private File javaBuildDir;
+    
+    /**
+     * The XMLVM target (e.g. "c", "posix", etc..)
+     */
     private String target;
+    
+    /**
+     * The directory where we store cached information like dependency trees.
+     */
     private File xmlvmCacheDir;
 
+    /**
+     * The classpath for XMLVM.  XMLVM.jar should be listed amongst these paths.
+     */
     private Path xmlvmClasspath;
     
+    /**
+     * A cache mapping class names to ClassFile objects.
+     */
     private Map<String, ClassFile> classIndex = new HashMap<String, ClassFile>();
     
     
@@ -200,9 +220,20 @@ public class XMLVM extends Task {
         this.xmlvmClasspath = xmlvmClasspath;
     }
 
+    /**
+     * A wrapper for a file and it's associated source root.  This 
+     * allows us to more easily determine the file's package lineage if it is
+     * a class.
+     */
     private class RootedFile {
 
+        /**
+         * The source root.
+         */
         final File root;
+        /**
+         * The source file.
+         */
         final File file;
 
         RootedFile(File root, File file) {
@@ -211,26 +242,71 @@ public class XMLVM extends Task {
         }
     }
 
+    /**
+     * Runs XMLVM with the specified command-line arguments.
+     * @param args 
+     */
     public void runXmlvm(String[] args) {
         XmlvmHelper.runXmlvm(getProject(), xmlvmClasspath, args);
     }
 
+    
+    /**
+     * Runs XMLVM with the specified command-line arguments.
+     * @param args
+     * @param xmlvmJar 
+     */
     public void runXmlvm(String[] args, File xmlvmJar) {
         XmlvmHelper.runXmlvm(getProject(), args, xmlvmJar);
         
 
     }
 
+    /**
+     * Encapsulates a class file.
+     */
     private class ClassFile {
 
+        /**
+         * The fully-qualified class name.  E.g. java.util.ArrayList
+         */
         private String name;
+        
+        /**
+         * The c prefix of the resulting XMLVM source output.  E.g. java_util_ArrayList
+         */
         private String cPrefix;
+        
+        /**
+         * The path to the Java source file for this class relative to a source
+         * root.  E.g. java/util/ArrayList.java
+         */
         private String javaSourcePath;
+        
+        /**
+         * The path to the java class file for this class relative to a source root.
+         * E.g. java/util/ArrayList.class
+         */
         private String javaClassPath;
 
+        /**
+         * The java source file for this class.
+         */
         private File javaSourceFile;
+        
+        /**
+         * The java class file for this class.
+         */
         private File javaClassFile;
+        
+        /**
+         * The .h file for this class.
+         */
         private File cHeaderFile;
+        
+        /**
+         * The .m file for this class.
+         */
         private File cBodyFile;
 
         ClassFile(String name) {
@@ -370,18 +446,44 @@ public class XMLVM extends Task {
 
     }
 
+    /**
+     * Converts a fully-qualified class name to a java source path.  E.g.
+     * Converts java.util.ArrayList to java/util/ArrayList.java
+     * @param className
+     * @return 
+     */
     private String classNameToJavaSourcePath(String className) {
         return className.replaceAll("\\.", "/") + ".java";
     }
 
+    /**
+     * Converts a fully-qualified class name to a java class path.  E.g.
+     * Converts java.util.ArrayList to java/util/ArrayList.class
+     * @param className
+     * @return 
+     */
     private String classNameToJavaClassPath(String className) {
         return className.replaceAll("\\.", "/") + ".class";
     }
 
+    /**
+     * Converts a fully-qualified class name to a c prefix.  E.g. converts
+     * java.util.ArrayList to java_util_ArrayList
+     * @param className
+     * @return 
+     */
     private String classNameToCPrefix(String className) {
         return className.replaceAll("\\.", "_").replaceAll("\\$", "_");
     }
 
+    /**
+     * Gets a ClassFile corresponding to the src-root/src-file pair.  This should
+     * handle .java, .class, .h, .c, .m, and .xmlvm files.
+     * 
+     * @param root The source root directory.
+     * @param file The source file.
+     * @return The ClassFile object for this class.
+     */
     private ClassFile getClassFile(File root, File file) {
         String className = getClassName(root, file);
         if (className == null) {
@@ -396,6 +498,12 @@ public class XMLVM extends Task {
         }
     }
 
+    /**
+     * Gets the fully-qualified class name for the given source file.
+     * @param root The source root.
+     * @param file The source file.  Can be .java, .class, .m, .h, .c, or .xmlvm
+     * @return The FQN for the class.
+     */
     private String getClassName(File root, File file) {
         String fname = file.getName();
         if (fname.endsWith(".java")) {
@@ -430,6 +538,15 @@ public class XMLVM extends Task {
         }
     }
 
+    /**
+     * Recursively adds all files inside file to a list of changed files.  If file
+     * is a file, it will be added if its modification time is newer than the corresponding
+     * .h file in the output directory.  If it is a directory, it will recursively crawl its
+     * children to find changed files.
+     * @param root The source root directory.
+     * @param file The file to check.  If this is a directory, it will be recursively crawled.
+     * @param out A list of RootedFile objects where changed files are added.
+     */
     private void getChangedFiles(File root, File file, List<RootedFile> out) {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
@@ -458,6 +575,13 @@ public class XMLVM extends Task {
         }
     }
 
+    /**
+     * Finds all matching target files in the output directory for a given class.  This 
+     * should find .h, .m, and .c files with with mangled names matching the class file
+     * pattern.
+     * @param clsFile
+     * @param out List where matches will be added.
+     */
     private void findMatchingTargetFiles(final ClassFile clsFile, List<File> out) {
         if (clsFile == null) {
             return;
@@ -476,8 +600,15 @@ public class XMLVM extends Task {
         }
     }
 
+    /**
+     * A cache for changed files to be stored, so we don't need to recalculate them every time.
+     */
     private RootedFile[] changedSourceFiles = null;
 
+    /**
+     * Gets all of the changed .java files that should be regenerated.
+     * @return 
+     */
     protected RootedFile[] getChangedSourceFiles() {
         if (changedSourceFiles == null) {
             List<RootedFile> out = new ArrayList<RootedFile>();
@@ -496,6 +627,11 @@ public class XMLVM extends Task {
 
     }
 
+    
+    /**
+     * Gets all of the changed class files that should be regenerated.
+     * @return 
+     */
     private RootedFile[] getChangedClassFiles() {
         List<RootedFile> out = new ArrayList<RootedFile>();
 
@@ -583,6 +719,11 @@ public class XMLVM extends Task {
         
     }
     
+    /**
+     * Gets the set of class names that have changed since the last time
+     * we ran XMLVM.
+     * @return 
+     */
     public Set<String> getChangedClassNames(){
         Set<String> out = new HashSet<String>();
         RootedFile[] changedClassFiles = getChangedClassFiles();
@@ -596,6 +737,15 @@ public class XMLVM extends Task {
         return out;
     }
     
+    /**
+     * Finds all of the classes from a given collection of class names that reside in a 
+     * given path.  It also copies the found classes into a specified destination directory.
+     * @param p The path to search.
+     * @param classNames The class names to search for.
+     * @param found The class names that were found in that path.
+     * @param destDir The directory where found classes will be copied to.
+     * @throws IOException 
+     */
     public void findClassesInPath(Path p, Collection<String> classNames, Set<String> found, File destDir) throws IOException{
         for ( String part : p.list() ){
             File f = new File(part);
@@ -636,6 +786,17 @@ public class XMLVM extends Task {
         }
     }
     
+    /**
+     * Finds all of the files in a specified directory whose class name matches a specified 
+     * collection of names.  Matched classes will be added to a found set of names and copied
+     * to a destination directory.
+     * @param root The source root (so we can figure out the class name based on a file path).
+     * @param dir The directory whose children we are crawling for matches.
+     * @param classNames The class names we are searching for.
+     * @param found Set where found class names are added.
+     * @param destDir The directory where matched classes are copied to.
+     * @throws IOException 
+     */
     private void findClassesInPath(File root, File dir, Collection<String> classNames, Set<String> found, File destDir) throws IOException{
         for ( File f : dir.listFiles() ){
             if ( f.isDirectory()){
@@ -652,13 +813,18 @@ public class XMLVM extends Task {
         }
     }
     
+    /**
+     * Try to just generate c source files on the changes.  If the destination directory
+     * doesn't exist, then it will still perform a clean build.
+     * @throws IOException 
+     */
     public void doRegularBuild() throws IOException {
         try {
             //if (getJavac() == null) {
             //    setJavac((Javac) getProject().createTask("javac"));
             //}
             Javac javac = (Javac)getProject().createTask("javac");
-            
+            File xmlvmDir = this.getXmlvmCacheDir("xmlvm");
 
             // Create a temporary directory as a destination for javac 
             File tmpBuild = File.createTempFile("build", "build");
@@ -688,6 +854,11 @@ public class XMLVM extends Task {
             System.out.println("Running javac on changed sources");
             System.out.println("Src dir is "+javac.getSrcdir());
             javac.execute();
+
+            // Update the dependency graph for the changed classes.
+            System.out.println("Updating dependency graph...");
+            this.updateDependencyGraph(tmpBuild, xmlvmDir);
+            
 
             // Copy the compiled files to the intermediate build dir
             
@@ -823,7 +994,10 @@ public class XMLVM extends Task {
     
     
     
-    
+    /**
+     * Perform a clean build.
+     * @throws IOException 
+     */
     public void doCleanBuild() throws IOException{
         
         
@@ -845,7 +1019,7 @@ public class XMLVM extends Task {
 
         
         // Step 3: Generate Dependency graph
-        createDependencyGraph(getJavaBuildDir(), xmlvmDir);
+        createDependencyGraph(getJavaBuildDir(), xmlvmDir, javac.getClasspath());
         
         
         // Step 4: Do a full XMLVM to C compilation
@@ -876,13 +1050,13 @@ public class XMLVM extends Task {
      * @param src Directory containing class files.
      * @param dest Directory where xmlvm files will be written, as well as .deps files
      */
-    public void createDependencyGraph(File src, File dest){
+    public void createDependencyGraph(File src, File dest, Path libPath){
         try {
             this.runXmlvm(new String[]{
                 "--in=" + src.getAbsolutePath(),
                 "--out=" + dest.getAbsolutePath(),
                 "--target=vtable",
-                "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
+                "--libraries=" + libPath.toString().replaceAll(File.pathSeparator, ","),
                 "--load-dependencies",
                 "--disable-vtable-optimizations"
             });
@@ -917,8 +1091,8 @@ public class XMLVM extends Task {
                     "--in=" + src.getAbsolutePath(),
                     "--out=" + tmpDir.getAbsolutePath(),
                     "--target=vtable",
-                    "--disable-vtable-optimizations"
-                    //"--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
+                    "--disable-vtable-optimizations",
+                    "--libraries=" + getJavac().getClasspath().toString().replaceAll(File.pathSeparator, ","),
                     //"--load-dependencies"
                 });
 
@@ -946,7 +1120,8 @@ public class XMLVM extends Task {
                         
 
                     }
-                    FileUtils.copyFile(src, oldXmlvmFile);
+                    System.out.println("Copying "+f+" to "+oldXmlvmFile);
+                    FileUtils.copyFile(f, oldXmlvmFile);
 
                 }
 
