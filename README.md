@@ -2,6 +2,8 @@
 
 This repository contains an ANT task to build [Codename One](http://www.codenameone.com) applications locally.  This project is targetted specifically at iOS builds.
 
+**NOTE:** If you are using Netbeans, then you might want to check out the [Codename One Offline iOS Build Netbeans Module](https://github.com/shannah/cn1-offline-ios-suite-nbm).  It bundles this task into a Netbeans module so that you can build your Netbeans-based Codename One projects locally without having to fuss with any build scripts.
+
 ----
 ###IMPORTANT:
 
@@ -53,6 +55,10 @@ If you find bugs, or have questions relating to this library, please post them t
 
 
 ##Installation
+
+The easiest way to install this ANT task is by installing the [Codename One Offline iOS Build Netbeans Module](https://github.com/shannah/cn1-offline-ios-suite-nbm) module.
+
+If you would prefer to just download and install the ANT task on its own, the instructions are as follows:
 
 * Download the [CN1LocalIOSBuild.jar](https://github.com/shannah/cn1-local-build-tools/raw/master/dist/CN1LocalIOSBuild.jar) file and add it to your ANT class path.  
 * You will also need to add the [commons-io-2.4.jar](https://github.com/shannah/cn1-local-build-tools/raw/master/dist/lib/commons-io-2.4.jar) and [xmlvm.jar](https://github.com/shannah/cn1-local-build-tools/raw/master/dist/lib/xmlvm.jar) files to your classpath since this is required by the task.  *Note that this version of xmlvm.jar is a slightly different version of XMLVM than you will find in either the Codename One repository or the [XMLVM website](http://www.xmlvm.org). It has been modified to support building only changed files.  You can find the source [here](https://github.com/shannah/cn1/tree/master/Ports/iOSPort/xmlvm).*  
@@ -107,6 +113,10 @@ In addition to the default task (`ca.weblite.codename1.ios.CodenameOneIOSBuildTa
 <openxcode/>
 
 ~~~~
+
+###Netbeans Module
+
+An easier way to use this task is to simply install the [Codename One Offline iOS Build Netbeans Module](https://github.com/shannah/cn1-offline-ios-suite-nbm).  It provides you with menu items for each of the ANT tasks provided in this module.  It also works with the Netbeans Update Center so that you can more easily stay up-to-date with the latest version of the module.
 
 ##How it Works
 
