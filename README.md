@@ -91,6 +91,27 @@ In addition to the default task (`ca.weblite.codename1.ios.CodenameOneIOSBuildTa
 
 ~~~~
 
+##How it Works
+
+This task creates an Xcode project inside the build directory of your Netbeans project.  (Actually it generates a sub-netbeans project at `build/ios`, which itself generates an Xcode project at `build/ios/dist/ProjectName.xcodeproj`).  This Xcode project will include all of the generated C-sources produced by XMLVM in the conversion process.  You should be able to build this Xcode project and run it either on the iOS simulator or on an actual device.
+
+Initial builds are *very* slow since it requires converting all application files, codename one files, and much of Apache Harmony into C source files, then building these generated sources in Xcode.  On my iMac with a 2.7GHz Intel Core i5, the full clean build of a moderately complex application takes about 15 minutes.
+
+Subsequent builds should be much faster, depending on how many classes were changed.  Generating C source files for changed Java files takes between 10 and 30 seconds usually.  Then re-compiling in Xcode takes another 5 seconds or so.
+
+This module will create a hidden .xmlvm directory inside your project directory to store cached files to help with dependency management and for speeding re-compilation.
+
+##Troubleshooting:
+
+
+### Xcode Project Won't Build: Unsupported Compiler
+
+On the initial build, quite often, the Xcode project will be set to use an unsupported compiler.  If you try to build your project, it will fail.  If this occurs, you should set the "Compiler for C++/Objective-C" in the "Build Settings" tab of your project properties (inside Xcode) to the "Default Compiler" as shown in the screenshot below:
+
+<img src="https://raw.github.com/shannah/cn1-local-build-tools/master/screenshots/compiler-setting.png" width="800"/>
+
+It should then build properly.
+
 ----
 
 ##Build Instructions
