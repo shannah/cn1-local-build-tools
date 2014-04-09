@@ -766,7 +766,7 @@ public class XMLVM extends Task {
                     JarEntry nex = entries.nextElement();
                     if ( nex.getName().endsWith(".class") ){
                         String foundClassName = nex.getName().replaceAll("/", ".").replaceAll("\\.class$", "");
-                        if ( classNames.contains(foundClassName)){
+                        if ( classNames.contains(foundClassName) && !found.contains(foundClassName)){
                             found.add(foundClassName);
                             FilenameSelector sel = new FilenameSelector();
                             sel.setName(nex.getName());
@@ -803,14 +803,41 @@ public class XMLVM extends Task {
                 findClassesInPath(root, f, classNames, found, destDir);
             } else {
                 ClassFile cf = getClassFile(root, f);
-                if ( cf != null && classNames.contains(cf.getName())){
+                if ( cf != null && classNames.contains(cf.getName()) && !found.contains(cf.getName())){
                     File destFile = new File(destDir, cf.getJavaClassPath());
                     destFile.getParentFile().mkdirs();
-                    FileUtils.copyFile(f, destFile);
+                    if ( !f.equals(destFile)){
+                        System.out.println("Copying "+f+" to "+destFile);
+                        FileUtils.copyFile(f, destFile);
+                    }
                     found.add(cf.getName());
                 }
             }
         }
+    }
+    
+    public static interface XmlvmCallback {
+        
+        public void beforeXmlvm(File inputDir, File outputDir);
+        
+        public void afterXmlvm(File inputDir, File outputDir);
+        
+    }
+    
+    public void doRegularBuild() throws IOException {
+        doRegularBuild(new XmlvmCallback(){
+
+            @Override
+            public void beforeXmlvm(File inputDir, File outputDir) {
+                
+            }
+
+            @Override
+            public void afterXmlvm(File inputDir, File outputDir) {
+                
+            }
+            
+        });
     }
     
     /**
@@ -818,7 +845,7 @@ public class XMLVM extends Task {
      * doesn't exist, then it will still perform a clean build.
      * @throws IOException 
      */
-    public void doRegularBuild() throws IOException {
+    public void doRegularBuild(XmlvmCallback callback) throws IOException {
         try {
             //if (getJavac() == null) {
             //    setJavac((Javac) getProject().createTask("javac"));
@@ -840,7 +867,7 @@ public class XMLVM extends Task {
             
             javac.setSrcdir(new Path(getProject(), changedSrcDir.getAbsolutePath()));
             try {
-                System.out.println("Classpath currently "+getJavac().getClasspath());
+                System.out.println("Classpath currently "+javac.getClasspath());
                 System.out.println("Adding to classpath: "+getClassPath());
                 if ( !getClassPath().equals(javac.getClasspath())){
                     javac.setClasspath(getClassPath());
@@ -849,12 +876,17 @@ public class XMLVM extends Task {
                 System.out.println(getClassPath());
                 throw ex;
             }
-            javac.getClasspath().add(new Path(getProject(), getJavaBuildDir().getAbsolutePath()));
-            
+            //javac.getClasspath().add(new Path(getProject(), getJavaBuildDir().getAbsolutePath()));
+            System.out.println("Java build dir is "+getJavaBuildDir());
             System.out.println("Running javac on changed sources");
             System.out.println("Src dir is "+javac.getSrcdir());
+            //javac.setFork(true);
+            javac.setVerbose(true);
+            javac.setFailonerror(true);
+            
             javac.execute();
-
+            
+            
             // Update the dependency graph for the changed classes.
             System.out.println("Updating dependency graph...");
             this.updateDependencyGraph(tmpBuild, xmlvmDir);
@@ -869,6 +901,7 @@ public class XMLVM extends Task {
             fs.setDir(tmpBuild);
             fs.setIncludes("**");
             copy.addFileset(fs);
+            copy.setOverwrite(true);
             copy.execute();
             
             
@@ -883,7 +916,9 @@ public class XMLVM extends Task {
             // Now try to find the dirty classes
             Set<String> found = new HashSet<String>();
             System.out.println("Locating dirty classes and copying to "+tmpBuild);
-            this.findClassesInPath(javac.getClasspath(), dirtyClasses, found, tmpBuild);
+            Path searchPath = new Path(getProject(), tmpBuild.getAbsolutePath());
+            searchPath.add(javac.getClasspath());
+            this.findClassesInPath(searchPath, dirtyClasses, found, tmpBuild);
             
             if ( found.size() != dirtyClasses.size()){
                 
@@ -924,21 +959,35 @@ public class XMLVM extends Task {
                 System.out.println(Arrays.asList(tmpBuild.list()));
             }
             System.out.println("Converting "+tmpBuild.list().length+" xmlvm files to c source files....");
+            System.out.println("Input Path is "+tmpBuild.getAbsolutePath());
+            System.out.println("Output Path is "+intermediateOut.getAbsolutePath());
+            System.out.println("Libraries is "+javac.getClasspath().toString().replaceAll(File.pathSeparator, ","));
+            
+            // XMLVM seems to copy files from 'libraries' into the 'in' directory
+            // which means we always get the old version.
+            // We need to copy to the ios/build/classes directory.
+            Copy copy2 = (Copy)getProject().createTask("copy");
+            
+            callback.beforeXmlvm(tmpBuild, intermediateOut);
+            
             this.runXmlvm(new String[]{
                 "--in=" + tmpBuild.getAbsolutePath(),
                 "--out=" + intermediateOut.getAbsolutePath(),
                 "--target=c",
-                "--libraries=" + javac.getClasspath().toString().replaceAll(File.pathSeparator, ","),
+                "--libraries=" +javac.getClasspath().toString().replaceAll(File.pathSeparator, ",") ,
                 "--c-source-extension=m", //"--debug=all",
                 "--disable-vtable-optimizations",
             });
-
+            
+            callback.afterXmlvm(tmpBuild, intermediateOut);
+            //if ( true )throw new IOException("test point");
+            
             System.out.println(Arrays.asList(intermediateOut.list()));
             
             del = (Delete) getProject().createTask("delete");
             del.setDir(tmpBuild);
             del.execute();
-
+            
             System.out.print("Removing constant pool dependencies...");
             ConstantPoolHelper.removeConstantPoolDependencies(intermediateOut);
             System.out.println("Finished.");
@@ -1445,6 +1494,7 @@ public class XMLVM extends Task {
             target.getParentFile().mkdirs();
             copy.setTofile(target);
             copy.setFile(f.file);
+            copy.setOverwrite(true);
             copy.execute();
 
         }
@@ -1786,6 +1836,7 @@ public class XMLVM extends Task {
             fs.setDir(tmpBuild);
             fs.setIncludes("**");
             copy.addFileset(fs);
+            copy.setOverwrite(true);
             copy.execute();
 
             // Now generate .xmlvm files
@@ -1878,8 +1929,9 @@ public class XMLVM extends Task {
             copy.addFileset(fs);
             copy.setVerbose(true);
             copy.setQuiet(false);
-            copy.execute();
             copy.setOverwrite(true);
+            copy.execute();
+            
         }
     }
 

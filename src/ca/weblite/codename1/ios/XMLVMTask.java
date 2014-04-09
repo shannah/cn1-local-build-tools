@@ -12,6 +12,7 @@ package ca.weblite.codename1.ios;
 // javac.classpath=${ant.core.lib}
 
 import ca.weblite.xmlvm.XMLVM;
+import ca.weblite.xmlvm.XMLVM.XmlvmCallback;
 import ca.weblite.xmlvm.XmlvmHelper;
 import com.simontuffs.onejar.Boot;
 import java.io.File;
@@ -529,8 +530,33 @@ public class XMLVMTask extends Task {
                 if ( !javac.getSrcdir().equals(xmlvm.getSrc())){
                     xmlvm.setSrc(javac.getSrcdir());
                 }
-                
-                xmlvm.doRegularBuild();
+                System.out.println("About to do regular XMLVM build");
+                xmlvm.doRegularBuild(new XmlvmCallback(){
+
+                    @Override
+                    public void beforeXmlvm(File inputDir, File outputDir) {
+                        /*
+                        System.out.println("In beforeXmlvm callback...");
+                        Copy c = (Copy)getProject().createTask("copy");
+                        c.setTodir(new File(getProject().getBaseDir(), "build/ios/build/classes"));
+                        FileSet fs = new FileSet();
+                        fs.setIncludes("**");
+                        fs.setDir(inputDir);
+                        
+                        c.setOverwrite(true);
+                        c.addFileset(fs);
+                        c.setVerbose(true);
+                        c.execute();
+                        */
+                        
+                    }
+
+                    @Override
+                    public void afterXmlvm(File inputDir, File outputDir) {
+                        
+                    }
+                    
+                });
                 
             }
             

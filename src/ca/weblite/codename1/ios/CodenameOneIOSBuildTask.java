@@ -149,10 +149,32 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
-    /**
-     * Originally we ran a pre javac against CLDC11 before building against
-     * harmony.. but this wasn't necessary.
+    
     private void runPreJavac(){
+        System.out.println("Running Pre Javac");
+        Javac javac = (Javac)getProject().createTask("javac");
+        //Path cp = javac.createClasspath();
+        
+        //cp.setPath(getProject().getProperty("javac.classpath"));
+        javac.setClasspath(new Path(getProject(),getProject().getProperty("javac.classpath")));
+        System.out.println("Prejavac classpath is "+javac.getClasspath());
+        javac.setSrcdir(new Path(getProject(),"src" ));
+        //javac.setDestdir(iOSPort);
+        
+        File build = new File(getProject().getBaseDir(), "build");
+        if ( !build.exists()){
+            build.mkdir();
+        }
+        
+        File classes = new File(build, "classes");
+        if ( !classes.exists() ){
+            classes.mkdir();
+        }
+        javac.setDestdir(classes);
+        javac.execute();
+    }
+    
+    private void runPreJavacOld(){
         Javac javac = (Javac)getProject().createTask("javac");
         Path cp = javac.createClasspath();
         //cp.add(new Path(getProject(), "src"));
@@ -205,7 +227,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
     }
     
-    */
+    
     
     /**
      * Returns the the iOSPort directory as a File.
@@ -611,7 +633,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
         
         
-        //runPreJavac();
+        runPreJavac();
         try {
             
             setupJavac();
