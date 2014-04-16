@@ -153,9 +153,12 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     private void runPreJavac(){
         System.out.println("Running Pre Javac");
         Javac javac = (Javac)getProject().createTask("javac");
+       
         //Path cp = javac.createClasspath();
         
         //cp.setPath(getProject().getProperty("javac.classpath"));
+        System.out.println("PRoperties "+getProject().getProperties());
+        System.out.println(System.getProperties());
         javac.setClasspath(new Path(getProject(),getProject().getProperty("javac.classpath")));
         System.out.println("Prejavac classpath is "+javac.getClasspath());
         javac.setSrcdir(new Path(getProject(),"src" ));
@@ -614,6 +617,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
     */
     public @Override
     void execute() throws BuildException {
+        
         File build = new File(getProject().getBaseDir(), "build");
         if ( !build.exists() ){
             build.mkdir();
@@ -633,7 +637,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
         
         
         
-        runPreJavac();
+        //runPreJavac();
         try {
             
             setupJavac();
