@@ -928,7 +928,7 @@ public class XMLVM extends Task {
                 System.out.println("Missing classes : "+missing);
                 System.out.println("Classpath is "+javac.getClasspath());
                 System.out.println("Missing include "+missing);
-                throw new RuntimeException("Failed to find all dirty classes that need to be compiled : "+found.size()+" vs "+dirtyClasses.size());
+                System.out.println("Failed to find all dirty classes that need to be compiled : "+found.size()+" vs "+dirtyClasses.size());
                 
             }
             
@@ -1024,7 +1024,16 @@ public class XMLVM extends Task {
             //FileSet fs = new FileSet();
             //fs.setDir(srcDir);
             File header = new File(srcDir, cf.getcPrefix()+".h");
+            if ( !header.exists() ){
+                System.err.println("Warning: Cannot copy header file "+header+" because it doesn't exist.");
+                
+            }
+            
             File body = new File(srcDir, cf.getcPrefix()+".m");
+            if ( !body.exists() ){
+                System.err.println("Warning: Cannot copy source file "+body+" because it doesn't exist.");
+            }
+            
             //fs.setIncludesfile(new File(srcDir, cf.getcPrefix()+".h"));
             //fs.setIncludesfile(new File(srcDir, cf.getcPrefix()+".m"));
             //System.out.println("Setting include to "+cf.getcPrefix());
@@ -1034,8 +1043,12 @@ public class XMLVM extends Task {
             File headerDest = new File(destDir, header.getName());
             File bodyDest = new File(destDir, body.getName());
             
-            FileUtils.copyFile(header, headerDest);
-            FileUtils.copyFile(body, bodyDest);
+            if ( header.exists() ){
+                FileUtils.copyFile(header, headerDest);
+            }
+            if ( body.exists() ){
+                FileUtils.copyFile(body, bodyDest);
+            }
         }
         //copy.setOverwrite(true);
         //copy.execute();

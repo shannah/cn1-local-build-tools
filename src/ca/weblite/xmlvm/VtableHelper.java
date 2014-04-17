@@ -54,7 +54,8 @@ public class VtableHelper {
         }
         
         String idxConstant = "XMLVM_VTABLE_IDX_"+funcName;
-        if ( headerContents.indexOf(idxConstant) > 0 ){
+        String idxConstantSp = idxConstant+" ";
+        if ( headerContents.indexOf(idxConstantSp) > 0 ){
             return idxConstant;
         } else if ( headerContents.indexOf(funcName+"(") > 0 ){
             return funcName;
