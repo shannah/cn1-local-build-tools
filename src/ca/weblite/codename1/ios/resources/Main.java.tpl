@@ -13,6 +13,7 @@ public class Main implements Runnable{
 
   public void run() {
     ma = new #MAIN_CLASS#();
+    IOSImplementation.setMainClass(ma);
     ma.init(this);
     ma.start();
   }

@@ -59,6 +59,9 @@ public class XmlvmHelper {
                 
             }
             System.out.println("About to execute XMLVM...");
+            for ( int i=0; i<args.length; i++){
+                System.out.println("ARG: "+args[i]);
+            }
             j.execute();
             System.out.println(FileUtils.readFileToString(log));
             System.out.println("Finished execution of XMLVM");
