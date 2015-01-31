@@ -269,7 +269,7 @@ public class CodenameOneIOSBuildTask extends XMLVMIOSTask {
      */
     private void addLibs(){
         String lib = getLib();
-        String toAdd = "libxml2.2.dylib,Security.framework,libzbar.a";
+        String toAdd = "libxml2.2.dylib,Security.framework,libzbar.a,GLKit.framework";
         if ( lib == null ){
             lib = "";
         }
