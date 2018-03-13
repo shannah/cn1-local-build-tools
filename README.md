@@ -1,4 +1,6 @@
-#Codename One Local iOS Build Ant Task
+# Codename One Local iOS Build Ant Task
+
+NOTE: This project is no longer maintained.  I recommend using the supported build workflow for Codename One as described on the [Codename One](http://www.codenameone.com) website.
 
 This repository contains an ANT task to build [Codename One](http://www.codenameone.com) applications locally.  This project is targetted specifically at iOS builds.
 
